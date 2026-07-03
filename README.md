@@ -1,6 +1,6 @@
 # Budget Antonin
 
-Suivi de budget mensuel personnel — revenus, dépenses par catégorie, dépenses plaisir, répartition, et aperçu du mois suivant. Page HTML autonome, sans dépendance ni build.
+Suivi de budget mensuel personnel - revenus, dépenses par catégorie, dépenses plaisir, répartition, et aperçu du mois suivant. Page HTML autonome, sans dépendance ni build.
 
 ## Utilisation
 
