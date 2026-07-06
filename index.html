@@ -426,6 +426,13 @@ html, body {
 .budget-root .row:last-of-type { border-bottom: none; }
 .budget-root .row.row-enter { opacity: 0; transform: translateY(6px); }
 .budget-root .row.row-exit { opacity: 0; transform: translateX(10px); }
+.budget-root .row.dragging {
+  position: relative;
+  z-index: 5;
+  background: var(--bg2);
+  border-radius: 10px;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.16);
+}
 
 .budget-root .row .tx-icon {
   width: 30px;
@@ -469,11 +476,27 @@ html, body {
 
 .budget-root .row .label-block { flex: 1; min-width: 0; }
 .budget-root .row .label {
-  font-size: 13.5px;
+  width: 100%;
+  font-size: 16px;
+  font-family: inherit;
+  color: var(--text);
+  border: none;
+  background: none;
+  padding: 2px 4px;
+  margin: -2px -4px;
+  border-radius: 6px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   display: block;
+  -webkit-touch-callout: none;
+  transition: background-color .15s ease, box-shadow .15s ease;
+}
+.budget-root .row .label:focus-visible {
+  outline: none;
+  background: rgba(0,113,227,0.08);
+  box-shadow: 0 0 0 1.5px var(--blue);
+  text-overflow: initial;
 }
 .budget-root .row .cat-tag {
   font-size: 9.5px;
@@ -776,7 +799,7 @@ html, body {
   .budget-root .panel-title { font-size: 14px; }
 
   .budget-root .row { gap: 7px; padding: 8px 0; }
-  .budget-root .row .label { font-size: 12.5px; }
+  .budget-root .row .label { font-size: 16px; }
   .budget-root .row .cat-tag { font-size: 8.5px; padding: 3px 19px 3px 7px; margin-right: 6px; }
   .budget-root .row .amount { width: 80px; font-size: 16px; }
   .budget-root .row .del-btn { font-size: 12px; }
@@ -988,6 +1011,114 @@ html, body {
     requestAnimationFrame(() => requestAnimationFrame(() => el.classList.remove('row-enter')));
   }
 
+  const LONG_PRESS_MS = 450;
+  const DRAG_MOVE_CANCEL_PX = 8;
+
+  function attachReorder(handle, row, item, list) {
+    let pressTimer = null;
+    let dragging = false;
+    let startX = 0, startY = 0;
+    let rows = [];
+    let startIndex = 0;
+    let currentIndex = 0;
+    let rowHeight = 0;
+    let originalCenters = [];
+
+    function onPreMove(e) {
+      if (Math.hypot(e.clientX - startX, e.clientY - startY) > DRAG_MOVE_CANCEL_PX) endPress();
+    }
+    function endPress() {
+      if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+      handle.removeEventListener('pointermove', onPreMove);
+      handle.removeEventListener('pointerup', endPress);
+      handle.removeEventListener('pointercancel', endPress);
+    }
+
+    function onPointerDown(e) {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      startX = e.clientX;
+      startY = e.clientY;
+      handle.addEventListener('pointermove', onPreMove);
+      handle.addEventListener('pointerup', endPress);
+      handle.addEventListener('pointercancel', endPress);
+      pressTimer = setTimeout(() => activate(e), LONG_PRESS_MS);
+    }
+
+    function activate(e) {
+      endPress();
+      const inputEl = handle.querySelector('input');
+      if (inputEl) inputEl.blur();
+      dragging = true;
+      const container = row.parentElement;
+      rows = Array.from(container.children).filter((el) => el.classList.contains('row'));
+      startIndex = rows.indexOf(row);
+      currentIndex = startIndex;
+      rowHeight = row.offsetHeight;
+      originalCenters = rows.map((r) => {
+        const rect = r.getBoundingClientRect();
+        return rect.top + rect.height / 2;
+      });
+      row.classList.add('dragging');
+      row.style.transition = 'none';
+      row.style.touchAction = 'none';
+      if (navigator.vibrate) navigator.vibrate(8);
+      try { row.setPointerCapture(e.pointerId); } catch (err) { /* noop */ }
+      window.addEventListener('pointermove', onMove, { passive: false });
+      window.addEventListener('pointerup', onEnd);
+      window.addEventListener('pointercancel', onEnd);
+    }
+
+    function onMove(e) {
+      if (!dragging) return;
+      e.preventDefault();
+      const deltaY = e.clientY - startY;
+      row.style.transform = 'translateY(' + deltaY + 'px) scale(1.015)';
+      const draggedCenter = originalCenters[startIndex] + deltaY;
+      let newIndex = 0;
+      for (let i = 0; i < rows.length; i++) {
+        if (i === startIndex) continue;
+        if (originalCenters[i] < draggedCenter) newIndex++;
+      }
+      if (newIndex !== currentIndex) {
+        currentIndex = newIndex;
+        rows.forEach((r, i) => {
+          if (i === startIndex) return;
+          let shift = 0;
+          if (startIndex < i && i <= currentIndex) shift = -rowHeight;
+          else if (currentIndex <= i && i < startIndex) shift = rowHeight;
+          r.style.transform = shift ? 'translateY(' + shift + 'px)' : '';
+        });
+      }
+    }
+
+    function onEnd(e) {
+      if (!dragging) return;
+      dragging = false;
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onEnd);
+      window.removeEventListener('pointercancel', onEnd);
+      try { row.releasePointerCapture(e.pointerId); } catch (err) { /* noop */ }
+
+      row.classList.remove('dragging');
+      row.style.transform = '';
+      row.style.transition = '';
+      row.style.touchAction = '';
+      rows.forEach((r) => { if (r !== row) r.style.transform = ''; });
+
+      if (currentIndex !== startIndex) {
+        const idx = list.indexOf(item);
+        if (idx !== -1) {
+          list.splice(idx, 1);
+          list.splice(currentIndex, 0, item);
+          save();
+        }
+      }
+      render();
+    }
+
+    handle.addEventListener('pointerdown', onPointerDown);
+  }
+
   function monthLabel(key) {
     const [y, m] = key.split('-').map(Number);
     return MONTH_NAMES[m - 1] + ' ' + y;
@@ -1048,11 +1179,20 @@ html, body {
 
     const labelBlock = document.createElement('div');
     labelBlock.className = 'label-block';
-    const label = document.createElement('span');
+    const label = document.createElement('input');
+    label.type = 'text';
     label.className = 'label';
-    label.textContent = item.label;
+    label.value = item.label;
+    label.onchange = () => {
+      const trimmed = label.value.trim();
+      item.label = trimmed || item.label;
+      label.value = item.label;
+      save();
+    };
+    label.onkeydown = (e) => { if (e.key === 'Enter') label.blur(); };
     labelBlock.appendChild(label);
     row.appendChild(labelBlock);
+    attachReorder(labelBlock, row, item, data[type]);
 
     if (type === 'expenses') {
       const tag = document.createElement('select');
