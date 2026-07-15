@@ -224,8 +224,8 @@ html, body {
 .budget-root .mini-stat.revenu .value { color: var(--green); }
 .budget-root .mini-stat.depense .value { color: var(--red); }
 
-/* ---------- plaisir accordion ---------- */
-.budget-root .plaisir-panel {
+/* ---------- category detail accordions (plaisir / alimentation / deplacement) ---------- */
+.budget-root .detail-panel {
   background: var(--glass);
   border: 1px solid var(--glass-border);
   backdrop-filter: blur(24px) saturate(170%);
@@ -235,7 +235,7 @@ html, body {
   box-shadow: 0 12px 30px rgba(0,0,0,0.05);
   overflow: hidden;
 }
-.budget-root .plaisir-header {
+.budget-root .detail-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -245,81 +245,80 @@ html, body {
   user-select: none;
   transition: background-color .18s ease;
 }
-.budget-root .plaisir-header:hover { background: rgba(0,0,0,0.025); }
-.budget-root .plaisir-header .phl {
+.budget-root .detail-header:hover { background: rgba(0,0,0,0.025); }
+.budget-root .detail-header .phl {
   display: flex;
   align-items: center;
   gap: 10px;
   font-size: 15px;
   font-weight: 600;
 }
-.budget-root .plaisir-header .phl .ico {
+.budget-root .detail-header .phl .ico {
   width: 30px; height: 30px;
   border-radius: 10px;
-  background: rgba(255,45,85,0.12);
   display: flex; align-items: center; justify-content: center;
   font-size: 14px;
 }
-.budget-root .plaisir-header .phr {
+.budget-root .detail-header .phr {
   display: flex;
   align-items: center;
   gap: 10px;
 }
-.budget-root .plaisir-summary {
+.budget-root .detail-summary {
   font-size: 13px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   color: var(--text-soft);
 }
-.budget-root .plaisir-chevron {
+.budget-root .detail-chevron {
   font-size: 12px;
   color: var(--text-soft);
   transition: transform .2s ease;
 }
-.budget-root .plaisir-panel.open .plaisir-chevron { transform: rotate(180deg); }
+.budget-root .detail-panel.open .detail-chevron { transform: rotate(180deg); }
 
-.budget-root .plaisir-body {
+.budget-root .detail-body {
   display: grid;
   grid-template-rows: 0fr;
   transition: grid-template-rows .25s ease;
 }
-.budget-root .plaisir-panel.open .plaisir-body {
+.budget-root .detail-panel.open .detail-body {
   grid-template-rows: 1fr;
 }
-.budget-root .plaisir-body-inner {
+.budget-root .detail-body-inner {
   overflow: hidden;
   padding: 0 20px 20px;
 }
 
-.budget-root .plaisir-progress-wrap { margin-bottom: 14px; }
-.budget-root .plaisir-progress-labels {
+.budget-root .detail-progress-wrap { margin-bottom: 14px; }
+.budget-root .detail-progress-labels {
   display: flex;
   justify-content: space-between;
   font-size: 11.5px;
   color: var(--text-soft);
   margin-bottom: 6px;
 }
-.budget-root .plaisir-progress-track {
+.budget-root .detail-progress-track {
   height: 10px;
   border-radius: 6px;
   background: rgba(0,0,0,0.06);
   overflow: hidden;
 }
-.budget-root .plaisir-progress-fill {
+.budget-root .detail-progress-fill {
   width: 100%;
   height: 100%;
   border-radius: 6px;
-  background: linear-gradient(90deg, #FF2D55, #FF9F0A);
+  background: var(--fill, linear-gradient(90deg, #FF2D55, #FF9F0A));
   transform: scaleX(0);
   transform-origin: left center;
   transition: transform .25s ease;
 }
-.budget-root .plaisir-progress-fill.over {
+.budget-root .detail-progress-fill.over {
   background: linear-gradient(90deg, #FF3B30, #FF3B30);
 }
 
-.budget-root .plaisir-list { margin-bottom: 4px; }
-.budget-root .plaisir-item {
+.budget-root .detail-list { margin-bottom: 4px; }
+.budget-root .detail-item {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -327,23 +326,23 @@ html, body {
   border-bottom: 1px solid rgba(0,0,0,0.06);
   transition: opacity .2s cubic-bezier(0.25, 1, 0.5, 1), transform .2s cubic-bezier(0.25, 1, 0.5, 1);
 }
-.budget-root .plaisir-item:last-of-type { border-bottom: none; }
-.budget-root .plaisir-item.row-enter { opacity: 0; transform: translateY(6px); }
-.budget-root .plaisir-item.row-exit { opacity: 0; transform: translateX(10px); }
-.budget-root .plaisir-item .pi-label {
+.budget-root .detail-item:last-of-type { border-bottom: none; }
+.budget-root .detail-item.row-enter { opacity: 0; transform: translateY(6px); }
+.budget-root .detail-item.row-exit { opacity: 0; transform: translateX(10px); }
+.budget-root .detail-item .di-label {
   flex: 1;
   font-size: 13px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.budget-root .plaisir-item .pi-date {
+.budget-root .detail-item .di-date {
   font-size: 11px;
   color: var(--text-faint);
   flex-shrink: 0;
   width: 60px;
 }
-.budget-root .plaisir-item .pi-amount {
+.budget-root .detail-item .di-amount {
   font-size: 13.5px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
@@ -351,7 +350,7 @@ html, body {
   text-align: right;
   flex-shrink: 0;
 }
-.budget-root .plaisir-item .pi-del {
+.budget-root .detail-item .di-del {
   background: none;
   border: none;
   color: var(--text-faint);
@@ -360,7 +359,7 @@ html, body {
   flex-shrink: 0;
   transition: color .15s ease, transform .15s ease;
 }
-.budget-root .plaisir-item .pi-del:hover { color: var(--red); transform: scale(1.2); }
+.budget-root .detail-item .di-del:hover { color: var(--red); transform: scale(1.2); }
 
 /* ---------- legend ---------- */
 .budget-root .legend {
@@ -786,11 +785,11 @@ html, body {
   .budget-root .mini-stat { padding: 10px 12px; border-radius: 14px; }
   .budget-root .mini-stat .value { font-size: 16px; }
 
-  .budget-root .plaisir-panel, .budget-root .ratio-panel, .budget-root .panel { border-radius: 18px; }
-  .budget-root .plaisir-header { padding: 14px 16px; }
-  .budget-root .plaisir-body-inner { padding: 0 16px 16px; }
-  .budget-root .plaisir-item .pi-label { font-size: 12px; }
-  .budget-root .plaisir-item .pi-date { width: 46px; font-size: 10px; }
+  .budget-root .detail-panel, .budget-root .ratio-panel, .budget-root .panel { border-radius: 18px; }
+  .budget-root .detail-header { padding: 14px 16px; }
+  .budget-root .detail-body-inner { padding: 0 16px 16px; }
+  .budget-root .detail-item .di-label { font-size: 12px; }
+  .budget-root .detail-item .di-date { width: 46px; font-size: 10px; }
 
   .budget-root .legend { font-size: 9.5px; gap: 10px; margin-left: 2px; }
 
@@ -862,35 +861,7 @@ html, body {
       </div>
     </div>
 
-    <div class="plaisir-panel" id="plaisirPanel">
-      <div class="plaisir-header" id="plaisirHeader">
-        <div class="phl"><span class="ico">🎉</span> Détail dépenses plaisir</div>
-        <div class="phr">
-          <span class="plaisir-summary" id="plaisirSummary">-</span>
-          <span class="plaisir-chevron">▾</span>
-        </div>
-      </div>
-      <div class="plaisir-body">
-        <div class="plaisir-body-inner">
-          <div class="plaisir-progress-wrap">
-            <div class="plaisir-progress-labels">
-              <span id="plaisirSpentLabel">0,00 € dépensés</span>
-              <span id="plaisirBudgetLabel">enveloppe 0,00 €</span>
-            </div>
-            <div class="plaisir-progress-track">
-              <div class="plaisir-progress-fill" id="plaisirProgressFill" style="transform:scaleX(0)"></div>
-            </div>
-          </div>
-          <div class="plaisir-list" id="plaisirList"></div>
-          <div class="add-row">
-            <input type="text" id="plLabel" placeholder="Ex: resto, sortie, shopping...">
-            <input type="date" id="plDate">
-            <input type="number" id="plAmount" placeholder="€">
-            <button class="add-btn" id="addPlaisirBtn">Ajouter</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div id="detailPanels"></div>
 
     <div class="legend">
       <span><span class="ios-toggle on" style="pointer-events:none;"></span>Récurrent</span>
@@ -965,6 +936,13 @@ html, body {
     'Sport': '🤸'
   };
   const MONTH_NAMES = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+
+  const DETAIL_CONFIG = [
+    { category: 'Alimentation', slug: 'alimentation', dataKey: 'alimentationDetails', icon: CAT_ICON['Alimentation'], iconBg: 'rgba(255,55,95,0.12)', fill: CAT_COLOR['Alimentation'], title: 'Détail dépenses alimentation', placeholder: 'Ex: courses, marché, boulangerie...' },
+    { category: 'Déplacement', slug: 'deplacement', dataKey: 'deplacementDetails', icon: CAT_ICON['Déplacement'], iconBg: 'rgba(50,173,230,0.12)', fill: CAT_COLOR['Déplacement'], title: 'Détail dépenses déplacement', placeholder: 'Ex: essence, métro, péage...' },
+    { category: 'Plaisir', slug: 'plaisir', dataKey: 'plaisirDetails', icon: CAT_ICON['Plaisir'], iconBg: 'rgba(255,45,85,0.12)', fill: 'linear-gradient(90deg, #FF2D55, #FF9F0A)', title: 'Détail dépenses plaisir', placeholder: 'Ex: resto, sortie, shopping...' },
+  ];
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
   const DEFAULT_JULY_2026 = {
     income: [
@@ -1142,18 +1120,19 @@ html, body {
     catch (e) { console.error('storage error', e); }
   }
 
+  function ensureDetailKeys(d) {
+    DETAIL_CONFIG.forEach((cfg) => { if (!d[cfg.dataKey]) d[cfg.dataKey] = []; });
+    return d;
+  }
+
   async function loadMonth(key) {
     let stored = await storageGet('budget:' + key);
-    if (stored) {
-      if (!stored.plaisirDetails) stored.plaisirDetails = [];
-      return stored;
-    }
+    if (stored) return ensureDetailKeys(stored);
     if (key === '2026-07') {
       const d = JSON.parse(JSON.stringify(DEFAULT_JULY_2026));
-      d.plaisirDetails = [];
-      return d;
+      return ensureDetailKeys(d);
     }
-    return { income: [], expenses: [], plaisirDetails: [] };
+    return ensureDetailKeys({ income: [], expenses: [] });
   }
 
   function newId() { idCounter++; return 'x' + idCounter + Date.now(); }
@@ -1161,6 +1140,61 @@ html, body {
   function populateCategorySelect() {
     const sel = $('#depCategory');
     sel.innerHTML = CATEGORIES.map(c => '<option value="' + c + '">' + c + '</option>').join('');
+  }
+
+  function buildDetailPanelHTML(cfg) {
+    return (
+      '<div class="detail-panel" id="' + cfg.slug + 'Panel">' +
+        '<div class="detail-header" id="' + cfg.slug + 'Header">' +
+          '<div class="phl"><span class="ico" style="background:' + cfg.iconBg + '">' + cfg.icon + '</span> ' + cfg.title + '</div>' +
+          '<div class="phr">' +
+            '<span class="detail-summary" id="' + cfg.slug + 'Summary">-</span>' +
+            '<span class="detail-chevron">▾</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="detail-body">' +
+          '<div class="detail-body-inner">' +
+            '<div class="detail-progress-wrap">' +
+              '<div class="detail-progress-labels">' +
+                '<span id="' + cfg.slug + 'SpentLabel">0,00 € dépensés</span>' +
+                '<span id="' + cfg.slug + 'BudgetLabel">enveloppe 0,00 €</span>' +
+              '</div>' +
+              '<div class="detail-progress-track">' +
+                '<div class="detail-progress-fill" id="' + cfg.slug + 'ProgressFill" style="--fill:' + cfg.fill + '; transform:scaleX(0)"></div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="detail-list" id="' + cfg.slug + 'List"></div>' +
+            '<div class="add-row">' +
+              '<input type="text" id="' + cfg.slug + 'Label" placeholder="' + cfg.placeholder + '">' +
+              '<input type="date" id="' + cfg.slug + 'Date">' +
+              '<input type="number" id="' + cfg.slug + 'Amount" placeholder="€">' +
+              '<button class="add-btn" id="add' + cap(cfg.slug) + 'Btn">Ajouter</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function buildDetailPanels() {
+    $('#detailPanels').innerHTML = DETAIL_CONFIG.map(buildDetailPanelHTML).join('');
+    DETAIL_CONFIG.forEach((cfg) => {
+      $('#' + cfg.slug + 'Header').onclick = () => { $('#' + cfg.slug + 'Panel').classList.toggle('open'); };
+      $('#add' + cap(cfg.slug) + 'Btn').onclick = async () => {
+        const label = $('#' + cfg.slug + 'Label').value.trim();
+        const amount = parseFloat($('#' + cfg.slug + 'Amount').value);
+        let date = $('#' + cfg.slug + 'Date').value;
+        if (!date) {
+          const [y, m] = currentKey.split('-');
+          date = y + '-' + m + '-01';
+        }
+        if (!label || isNaN(amount)) return;
+        if (!data[cfg.dataKey]) data[cfg.dataKey] = [];
+        data[cfg.dataKey].push({ id: newId(), label, amount, date, _justAdded: true });
+        $('#' + cfg.slug + 'Label').value = ''; $('#' + cfg.slug + 'Amount').value = ''; $('#' + cfg.slug + 'Date').value = '';
+        render(); await save();
+      };
+    });
   }
 
   function renderRow(item, type) {
@@ -1278,7 +1312,7 @@ html, body {
 
     renderRatios(solde);
     renderPreview();
-    renderPlaisir();
+    DETAIL_CONFIG.forEach(renderDetailPanel);
   }
 
   function renderPreview() {
@@ -1326,47 +1360,48 @@ html, body {
     }
   }
 
-  function renderPlaisir() {
-    const budgetPlaisir = data.expenses.filter(i => i.category === 'Plaisir').reduce((s, i) => s + i.amount, 0);
-    const spent = (data.plaisirDetails || []).reduce((s, i) => s + i.amount, 0);
-    const remaining = budgetPlaisir - spent;
-    const pct = budgetPlaisir > 0 ? Math.min(100, (spent / budgetPlaisir) * 100) : 0;
+  function renderDetailPanel(cfg) {
+    const budget = data.expenses.filter(i => i.category === cfg.category).reduce((s, i) => s + i.amount, 0);
+    const details = data[cfg.dataKey] || [];
+    const spent = details.reduce((s, i) => s + i.amount, 0);
+    const remaining = budget - spent;
+    const pct = budget > 0 ? Math.min(100, (spent / budget) * 100) : 0;
 
-    $('#plaisirSummary').textContent = fmt(spent) + ' / ' + fmt(budgetPlaisir);
-    $('#plaisirSpentLabel').textContent = fmt(spent) + ' dépensés';
-    $('#plaisirBudgetLabel').textContent = (remaining >= 0 ? 'reste ' + fmt(remaining) : 'dépassement de ' + fmt(Math.abs(remaining))) + ' (enveloppe ' + fmt(budgetPlaisir) + ')';
+    $('#' + cfg.slug + 'Summary').textContent = fmt(spent) + ' / ' + fmt(budget);
+    $('#' + cfg.slug + 'SpentLabel').textContent = fmt(spent) + ' dépensés';
+    $('#' + cfg.slug + 'BudgetLabel').textContent = (remaining >= 0 ? 'reste ' + fmt(remaining) : 'dépassement de ' + fmt(Math.abs(remaining))) + ' (enveloppe ' + fmt(budget) + ')';
 
-    const fill = $('#plaisirProgressFill');
+    const fill = $('#' + cfg.slug + 'ProgressFill');
     fill.style.transform = 'scaleX(' + (pct / 100) + ')';
-    fill.className = 'plaisir-progress-fill' + (spent > budgetPlaisir ? ' over' : '');
+    fill.className = 'detail-progress-fill' + (spent > budget ? ' over' : '');
 
-    const list = $('#plaisirList');
+    const list = $('#' + cfg.slug + 'List');
     list.innerHTML = '';
-    const items = (data.plaisirDetails || []).slice().sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+    const items = details.slice().sort((a, b) => (a.date || '').localeCompare(b.date || ''));
     if (items.length === 0) {
-      list.innerHTML = '<div class="empty-note">Aucune dépense plaisir enregistrée pour ce mois.</div>';
+      list.innerHTML = '<div class="empty-note">Aucune dépense enregistrée pour ce mois.</div>';
     } else {
       items.forEach(item => {
         const row = document.createElement('div');
-        row.className = 'plaisir-item';
+        row.className = 'detail-item';
         const dateStr = item.date ? item.date.slice(5).split('-').reverse().join('/') : '';
         row.innerHTML =
-          '<span class="pi-date">' + dateStr + '</span>' +
-          '<span class="pi-label">' + item.label + '</span>' +
-          '<span class="pi-amount">' + fmt(item.amount) + '</span>';
+          '<span class="di-date">' + dateStr + '</span>' +
+          '<span class="di-label">' + item.label + '</span>' +
+          '<span class="di-amount">' + fmt(item.amount) + '</span>';
         const del = document.createElement('button');
-        del.className = 'pi-del';
+        del.className = 'di-del';
         del.textContent = '✕';
         del.onclick = () => {
           if (row.classList.contains('row-exit')) return;
           if (prefersReducedMotion) {
-            data.plaisirDetails = data.plaisirDetails.filter(i => i.id !== item.id);
+            data[cfg.dataKey] = data[cfg.dataKey].filter(i => i.id !== item.id);
             save(); render();
             return;
           }
           row.classList.add('row-exit');
           row.addEventListener('transitionend', () => {
-            data.plaisirDetails = data.plaisirDetails.filter(i => i.id !== item.id);
+            data[cfg.dataKey] = data[cfg.dataKey].filter(i => i.id !== item.id);
             save(); render();
           }, { once: true });
         };
@@ -1408,11 +1443,10 @@ html, body {
     const nextKey = shiftMonth(currentKey, 1);
     const existing = await storageGet('budget:' + nextKey);
     if (existing) { switchToMonth(nextKey); return; }
-    const carried = {
+    const carried = ensureDetailKeys({
       income: data.income.filter(i => i.recurring).map(i => ({ ...i, id: newId() })),
       expenses: data.expenses.filter(i => i.recurring).map(i => ({ ...i, id: newId() })),
-      plaisirDetails: []
-    };
+    });
     currentKey = nextKey;
     data = carried;
     await save();
@@ -1437,24 +1471,8 @@ html, body {
     render(); await save();
   };
 
-  $('#plaisirHeader').onclick = () => { $('#plaisirPanel').classList.toggle('open'); };
-
-  $('#addPlaisirBtn').onclick = async () => {
-    const label = $('#plLabel').value.trim();
-    const amount = parseFloat($('#plAmount').value);
-    let date = $('#plDate').value;
-    if (!date) {
-      const [y, m] = currentKey.split('-');
-      date = y + '-' + m + '-01';
-    }
-    if (!label || isNaN(amount)) return;
-    if (!data.plaisirDetails) data.plaisirDetails = [];
-    data.plaisirDetails.push({ id: newId(), label, amount, date, _justAdded: true });
-    $('#plLabel').value = ''; $('#plAmount').value = ''; $('#plDate').value = '';
-    render(); await save();
-  };
-
   populateCategorySelect();
+  buildDetailPanels();
 
   // Best-effort favicon injection using the same logo shown in the header
   try {
