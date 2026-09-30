@@ -55,10 +55,12 @@ html, body {
   --glass-line: rgba(255,255,255,0.14);
 
   --c-fixes: #14286B;
+  --c-alim: #5C6680;
+  --c-deplac: #6E95FF;
   --c-epargne: #2456F0;
-  --c-plaisir: #6E95FF;
+  --c-plaisir: #3B3F4A;
   --c-imprevus: #9AA3B5;
-  --c-invest: #44526E;
+  --c-invest: #C3C8D3;
 
   --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', Roboto, sans-serif;
   --font-mono: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Segoe UI', Roboto, sans-serif;
@@ -462,7 +464,6 @@ html, body {
   transition: background-color .15s ease, transform .1s ease;
 }
 .budget-root .detail-item .di-method:active { transform: scale(0.94); }
-.budget-root .detail-item .di-method.swile { background: #C94526; }
 .budget-root .detail-item .di-del {
   background: none;
   border: none;
@@ -1217,18 +1218,22 @@ html, body {
 <script>
 (function() {
   // Les 4 enveloppes du budget, plus l'investissement suivi à part (jamais compté comme épargne).
-  const CATEGORIES = ['Charges fixes','Épargne','Plaisir','Imprévus','Investissement'];
+  const CATEGORIES = ['Charges fixes','Alimentation','Déplacement','Épargne','Plaisir','Imprévus','Investissement'];
   const CAT_COLOR = {
     'Charges fixes': 'var(--c-fixes)',
+    'Alimentation': 'var(--c-alim)',
+    'Déplacement': 'var(--c-deplac)',
     'Épargne': 'var(--c-epargne)',
     'Plaisir': 'var(--c-plaisir)',
     'Imprévus': 'var(--c-imprevus)',
     'Investissement': 'var(--c-invest)'
   };
   // Silver shades are too light for white text on the category tag.
-  const LIGHT_CATS = ['Imprévus'];
+  const LIGHT_CATS = ['Imprévus', 'Investissement'];
   const CAT_ICON = {
     'Charges fixes': '🏠',
+    'Alimentation': '🛒',
+    'Déplacement': '🚌',
     'Épargne': '💰',
     'Plaisir': '🎉',
     'Imprévus': '⚠️',
@@ -1237,12 +1242,13 @@ html, body {
   // Anciennes catégories -> nouvelles enveloppes.
   const OLD_CAT_MAP = {
     'Appartement': 'Charges fixes', 'Abonnement': 'Charges fixes',
-    'Alimentation': 'Charges fixes', 'Déplacement': 'Charges fixes',
     'Sport': 'Plaisir'
   };
   const MONTH_NAMES = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
 
   const DETAIL_CONFIG = [
+    { category: 'Alimentation', slug: 'alimentation', dataKey: 'alimentationDetails', icon: CAT_ICON['Alimentation'], fill: CAT_COLOR['Alimentation'], title: 'Enveloppe alimentation', placeholder: 'Ex: courses, marché...', subs: [] },
+    { category: 'Déplacement', slug: 'deplacement', dataKey: 'deplacementDetails', icon: CAT_ICON['Déplacement'], fill: CAT_COLOR['Déplacement'], title: 'Enveloppe déplacement', placeholder: 'Ex: essence, métro, péage...', subs: [] },
     { category: 'Plaisir', slug: 'plaisir', dataKey: 'plaisirDetails', icon: CAT_ICON['Plaisir'], fill: CAT_COLOR['Plaisir'], title: 'Enveloppe plaisir', placeholder: 'Ex: resto, ciné...',
       subs: ['Restaurants', 'Bars', 'Fast-food', 'Sport', 'Achats plaisir', 'Cadeaux'] },
     { category: 'Imprévus', slug: 'imprevus', dataKey: 'imprevusDetails', icon: CAT_ICON['Imprévus'], fill: CAT_COLOR['Imprévus'], title: 'Enveloppe imprévus', placeholder: 'Ex: pharmacie, réparation...',
@@ -1255,7 +1261,6 @@ html, body {
     income: [
       { id: 'i1', label: 'Salaire', amount: 1350, recurring: true },
       { id: 'i2', label: 'Reste sur compte', amount: 0, recurring: false },
-      { id: 'i3', label: 'Swile', amount: 120, recurring: true },
       { id: 'i4', label: "Prime d'activité", amount: 172.42, recurring: true },
       { id: 'i5', label: 'APL', amount: 304, recurring: true },
       { id: 'i6', label: 'Adrien (Avril)', amount: 250, recurring: false },
@@ -1539,7 +1544,7 @@ html, body {
               '<input type="text" id="' + cfg.slug + 'Label" placeholder="' + cfg.placeholder + '">' +
               '<input type="date" id="' + cfg.slug + 'Date">' +
               '<input type="number" id="' + cfg.slug + 'Amount" placeholder="€">' +
-              '<select id="' + cfg.slug + 'Sub">' + cfg.subs.map((x) => '<option>' + x + '</option>').join('') + '</select>' +
+              (cfg.subs.length ? '<select id="' + cfg.slug + 'Sub">' + cfg.subs.map((x) => '<option>' + x + '</option>').join('') + '</select>' : '') +
               '<button class="add-btn" id="add' + cap(cfg.slug) + 'Btn">Ajouter</button>' +
             '</div>' +
           '</div>' +
@@ -1562,7 +1567,8 @@ html, body {
         }
         if (!label || isNaN(amount)) return;
         if (!data[cfg.dataKey]) data[cfg.dataKey] = [];
-        const newItem = { id: newId(), label, amount, date, sub: $('#' + cfg.slug + 'Sub').value, _justAdded: true };
+        const newItem = { id: newId(), label, amount, date, _justAdded: true };
+        if (cfg.subs.length) newItem.sub = $('#' + cfg.slug + 'Sub').value;
         data[cfg.dataKey].push(newItem);
         $('#' + cfg.slug + 'Label').value = ''; $('#' + cfg.slug + 'Amount').value = ''; $('#' + cfg.slug + 'Date').value = '';
         render(); await save();
@@ -1741,6 +1747,7 @@ html, body {
   }
 
   function renderSubGrid(cfg, details) {
+    if (!cfg.subs.length) return;
     const plafonds = data.subBudgets[cfg.category];
     const bySub = {};
     details.forEach((i) => { const k = cfg.subs.includes(i.sub) ? i.sub : OTHER_SUB; bySub[k] = (bySub[k] || 0) + i.amount; });
@@ -1803,12 +1810,14 @@ html, body {
           '<span class="di-date">' + dateStr + '</span>' +
           '<span class="di-label">' + item.label + '</span>';
 
+        if (cfg.subs.length) {
         const subSel = document.createElement('select');
         subSel.className = 'di-sub';
         const opts = cfg.subs.includes(item.sub) ? cfg.subs : [OTHER_SUB].concat(cfg.subs);
         subSel.innerHTML = opts.map((x) => '<option' + (x === (item.sub || OTHER_SUB) ? ' selected' : '') + '>' + x + '</option>').join('');
         subSel.onchange = () => { item.sub = subSel.value; save(); render(); };
         row.appendChild(subSel);
+        }
 
         const amount = document.createElement('span');
         amount.className = 'di-amount';
