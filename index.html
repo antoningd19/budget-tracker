@@ -258,6 +258,67 @@ html, body {
 .budget-root .mini-stat.revenu .label { color: #4ADE80; }
 .budget-root .mini-stat.depense .label { color: #FF8A8E; }
 
+.budget-root .balance-sub {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--on-hero-soft);
+  font-variant-numeric: tabular-nums;
+}
+.budget-root .balance-sub.neg { color: #FF8A8E; }
+.budget-root .mini-stats { grid-template-columns: 1fr 1fr 1fr; }
+.budget-root .mini-stat.invest .label { color: #8FB0FF; }
+
+/* ---------- plan épargne (octobre → avril) ---------- */
+.budget-root .plan-panel {
+  background: var(--white);
+  border: 1px solid rgba(15,23,42,0.04);
+  border-radius: var(--radius-lg);
+  padding: 20px 20px 16px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-card);
+}
+.budget-root .plan-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+.budget-root .plan-title { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+.budget-root .plan-range { font-size: 12px; color: var(--ink-soft); }
+.budget-root .plan-total { margin-bottom: 10px; }
+.budget-root .plan-total-value { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.budget-root .plan-total-sub { font-size: 12.5px; color: var(--ink-soft); margin-top: 2px; }
+.budget-root .plan-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1fr 0.9fr;
+  align-items: center;
+  gap: 8px;
+  font-variant-numeric: tabular-nums;
+}
+.budget-root .plan-grid > :not(:first-child) { text-align: right; }
+.budget-root .plan-grid-head { font-size: 11px; color: var(--ink-faint); margin: 16px 0 4px; }
+.budget-root .plan-row {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--white-line);
+  font-size: 13.5px;
+  cursor: pointer;
+}
+.budget-root .plan-row:last-child { border-bottom: none; }
+.budget-root .plan-row .pm { font-weight: 600; text-transform: capitalize; }
+.budget-root .plan-row.current .pm { color: #2456F0; }
+.budget-root .plan-row.future { color: var(--ink-faint); }
+.budget-root .plan-row .ps { font-weight: 600; }
+.budget-root .plan-row .ps.hit { color: #2456F0; }
+.budget-root .plan-row input.pg {
+  width: 100%;
+  border: none;
+  background: var(--cream);
+  border-radius: 8px;
+  padding: 5px 6px;
+  font: inherit;
+  font-size: 13px;
+  text-align: right;
+  color: var(--ink);
+}
+.budget-root .plan-row input.pg:focus-visible { outline: none; box-shadow: 0 0 0 2px #2456F0; background: var(--blue-tint); }
+.budget-root .plan-row input.pg::placeholder { color: var(--ink-faint); }
+.budget-root .plan-note { font-size: 11px; color: var(--ink-faint); margin-top: 10px; }
+
 /* ---------- category detail accordions (plaisir / alimentation / deplacement) ---------- */
 .budget-root .detail-panel {
   background: var(--white);
@@ -810,12 +871,12 @@ html, body {
   font-family: var(--font-mono);
   font-size: 14px;
   font-weight: 600;
-  color: var(--blue);
+  color: #2456F0;
   cursor: pointer;
   box-shadow: var(--shadow-soft);
   transition: background-color .18s ease, border-color .18s ease, transform .15s ease;
 }
-.budget-root .evolution-cta:hover { background: var(--blue-tint); }
+.budget-root .evolution-cta:hover { background: rgba(36,86,240,0.08); }
 .budget-root .evolution-cta:active { transform: scale(0.98); }
 
 .budget-root .evolution-panel {
@@ -858,7 +919,7 @@ html, body {
   color: var(--ink-soft);
 }
 .budget-root .evolution-solde { font-family: var(--font-mono); font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; }
-.budget-root .evolution-solde.pos { color: var(--green); }
+.budget-root .evolution-solde.pos { color: #2456F0; font-size: 14px; }
 .budget-root .evolution-solde.neg { color: var(--red); }
 .budget-root .evolution-sub {
   display: flex;
@@ -969,7 +1030,11 @@ html, body {
   .budget-root .balance-value { font-size: 36px; }
   .budget-root .mini-stats { gap: 8px; }
   .budget-root .mini-stat { padding: 10px 12px; border-radius: 14px; }
-  .budget-root .mini-stat .value { font-size: 15px; }
+  .budget-root .mini-stat .value { font-size: 14px; }
+  .budget-root .mini-stat .label { font-size: 11px; }
+  .budget-root .mini-stat { padding: 10px 10px; }
+  .budget-root .plan-panel { padding: 16px 16px 14px; border-radius: 18px; }
+  .budget-root .plan-row { font-size: 12.5px; }
 
   .budget-root .detail-panel, .budget-root .ratio-panel, .budget-root .panel { border-radius: 18px; }
   .budget-root .detail-header { padding: 14px 16px; }
@@ -1032,8 +1097,9 @@ html, body {
         <button class="arrow" id="nextBtn">›</button>
       </div>
       <div class="balance-block month-fade">
-        <div class="balance-label">Livret (solde du mois)</div>
-        <div class="balance-value" id="totalSolde">-</div>
+        <div class="balance-label">Mis de côté ce mois</div>
+        <div class="balance-value" id="totalEpargne">-</div>
+        <div class="balance-sub" id="tauxEpargne"></div>
       </div>
       <div class="mini-stats month-fade">
         <div class="mini-stat revenu">
@@ -1043,6 +1109,10 @@ html, body {
         <div class="mini-stat depense">
           <div class="label">↓ Dépenses</div>
           <div class="value" id="totalDepenses">-</div>
+        </div>
+        <div class="mini-stat invest">
+          <div class="label">↗ Investi</div>
+          <div class="value" id="totalInvesti">-</div>
         </div>
       </div>
     </div>
@@ -1082,6 +1152,21 @@ html, body {
     <div class="ratio-panel">
       <div class="ratio-title">Répartition par catégorie</div>
       <div id="ratioRows"></div>
+    </div>
+
+    <div class="plan-panel">
+      <div class="plan-head">
+        <div class="plan-title">Plan épargne</div>
+        <span class="plan-range" id="planRange"></span>
+      </div>
+      <div class="plan-total">
+        <div class="plan-total-value" id="planTotal">-</div>
+        <div class="plan-total-sub" id="planTotalSub"></div>
+      </div>
+      <div class="detail-progress-track"><div class="detail-progress-fill" id="planProgress" style="--fill:#2456F0; transform:scaleX(0)"></div></div>
+      <div class="plan-grid plan-grid-head"><span>Mois</span><span>Revenus</span><span>Mis de côté</span><span>Objectif</span></div>
+      <div id="planRows"></div>
+      <div class="plan-note">Touche un objectif pour le modifier. Touche un mois pour l'ouvrir.</div>
     </div>
 
     <div class="preview-card">
@@ -1368,6 +1453,24 @@ html, body {
     return ensureDetailKeys({ income: [], expenses: [] });
   }
 
+  // Savings = explicit "Épargne" lines + whatever is left at the end of the month.
+  // Investments are tracked separately and never count as savings.
+  function computeTotals(d) {
+    const income = d.income || [], expenses = d.expenses || [];
+    const revenu = income.reduce((s, i) => s + i.amount, 0);
+    const sumCat = (c) => expenses.filter(i => i.category === c).reduce((s, i) => s + i.amount, 0);
+    const epargneLignes = sumCat('Épargne');
+    const investi = sumCat('Investissement');
+    const toutesDepenses = expenses.reduce((s, i) => s + i.amount, 0);
+    const solde = revenu - toutesDepenses;
+    const misDeCote = epargneLignes + Math.max(0, solde);
+    return {
+      revenu, investi, solde, misDeCote,
+      depenses: toutesDepenses - epargneLignes - investi,
+      taux: revenu > 0 ? (misDeCote / revenu) * 100 : 0
+    };
+  }
+
   function newId() { idCounter++; return 'x' + idCounter + Date.now(); }
 
   function populateCategorySelect() {
@@ -1521,24 +1624,35 @@ html, body {
     const totalRevenu = data.income.reduce((s, i) => s + i.amount, 0);
     const totalDepenses = data.expenses.reduce((s, i) => s + i.amount, 0);
     const solde = totalRevenu - totalDepenses;
+    const t = computeTotals(data);
 
-    $('#totalRevenu').textContent = fmt(totalRevenu);
-    $('#totalDepenses').textContent = fmt(totalDepenses);
-    const soldeEl = $('#totalSolde');
-    const soldeChanged = prevSolde !== null && prevSolde !== solde;
-    soldeEl.textContent = fmt(solde);
-    soldeEl.className = 'balance-value ' + (solde >= 0 ? 'pos' : 'neg');
-    if (soldeChanged) {
-      soldeEl.classList.add('pulse');
-      soldeEl.addEventListener('animationend', () => soldeEl.classList.remove('pulse'), { once: true });
+    $('#totalRevenu').textContent = fmt(t.revenu);
+    $('#totalDepenses').textContent = fmt(t.depenses);
+    $('#totalInvesti').textContent = fmt(t.investi);
+    const epEl = $('#totalEpargne');
+    const epChanged = prevSolde !== null && prevSolde !== t.misDeCote;
+    epEl.textContent = fmt(t.misDeCote);
+    epEl.className = 'balance-value pos';
+    if (epChanged) {
+      epEl.classList.add('pulse');
+      epEl.addEventListener('animationend', () => epEl.classList.remove('pulse'), { once: true });
     }
-    prevSolde = solde;
+    prevSolde = t.misDeCote;
+    const sub = $('#tauxEpargne');
+    if (t.solde < 0) {
+      sub.textContent = 'Dépassement de ' + fmt(-t.solde) + ' ce mois';
+      sub.className = 'balance-sub neg';
+    } else {
+      sub.textContent = t.revenu > 0 ? 'Taux d’épargne ' + t.taux.toLocaleString('fr-FR', { maximumFractionDigits: 1 }) + ' %' : '';
+      sub.className = 'balance-sub';
+    }
 
     $('#revenuSum').textContent = fmt(totalRevenu);
     $('#depenseSum').textContent = fmt(totalDepenses);
 
     renderRatios(solde);
     renderPreview();
+    renderPlan();
     DETAIL_CONFIG.forEach(renderDetailPanel);
   }
 
@@ -1655,6 +1769,61 @@ html, body {
     }
   }
 
+  const PLAN_MONTHS = ['2026-10','2026-11','2026-12','2027-01','2027-02','2027-03','2027-04'];
+  // Octobre / novembre : pas d'objectif fixe (bonus). Saison : 1 000 € par défaut, modifiable.
+  const DEFAULT_GOALS = { '2026-12': 1000, '2027-01': 1000, '2027-02': 1000, '2027-03': 1000, '2027-04': 1000 };
+  const SHORT_MONTHS = ['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+  const shortLabel = (key) => { const [y, m] = key.split('-'); return SHORT_MONTHS[+m - 1] + ' ' + y.slice(2); };
+  const fmt0 = (n) => Math.round(n).toLocaleString('fr-FR') + ' €';
+
+  async function getGoals() {
+    const g = await storageGet('budget-plan-goals');
+    return Object.assign({}, DEFAULT_GOALS, g || {});
+  }
+
+  async function renderPlan() {
+    const goals = await getGoals();
+    const container = $('#planRows');
+    $('#planRange').textContent = shortLabel(PLAN_MONTHS[0]) + ' → ' + shortLabel(PLAN_MONTHS[PLAN_MONTHS.length - 1]);
+    let totalSaved = 0, totalGoal = 0;
+    const rows = [];
+    for (const key of PLAN_MONTHS) {
+      const d = key === currentKey ? data : await storageGet('budget:' + key);
+      const t = d ? computeTotals(d) : null;
+      const goal = goals[key] || 0;
+      totalGoal += goal;
+      if (t) totalSaved += t.misDeCote;
+      rows.push({ key, t, goal });
+    }
+    container.innerHTML = '';
+    rows.forEach(({ key, t, goal }) => {
+      const row = document.createElement('div');
+      row.className = 'plan-grid plan-row' + (key === currentKey ? ' current' : '') + (t ? '' : ' future');
+      const hit = t && goal > 0 && t.misDeCote >= goal;
+      row.innerHTML =
+        '<span class="pm">' + shortLabel(key) + '</span>' +
+        '<span>' + (t ? fmt0(t.revenu) : '-') + '</span>' +
+        '<span class="ps' + (hit ? ' hit' : '') + '">' + (t ? fmt0(t.misDeCote) : '-') + (hit ? ' ✓' : '') + '</span>' +
+        '<span><input class="pg" type="number" inputmode="decimal" placeholder="bonus" value="' + (goal || '') + '"></span>';
+      const input = row.querySelector('input.pg');
+      input.onclick = (e) => e.stopPropagation();
+      input.onchange = async () => {
+        const g = await storageGet('budget-plan-goals') || {};
+        g[key] = parseFloat(input.value) || 0;
+        await storageSet('budget-plan-goals', g);
+        renderPlan();
+      };
+      row.onclick = () => { if (key !== currentKey) { switchToMonth(key); window.scrollTo({ top: 0, behavior: 'smooth' }); } };
+      container.appendChild(row);
+    });
+    $('#planTotal').textContent = fmt(totalSaved) + ' mis de côté';
+    $('#planTotalSub').textContent = totalGoal > 0
+      ? 'Objectif ' + fmt0(totalGoal) + ' · ' + Math.round(Math.min(100, (totalSaved / totalGoal) * 100)) + ' % atteint'
+      : 'Aucun objectif défini';
+    const pct = totalGoal > 0 ? Math.min(1, totalSaved / totalGoal) : 0;
+    $('#planProgress').style.transform = 'scaleX(' + pct + ')';
+  }
+
   async function save() {
     await storageSet('budget:' + currentKey, data);
     let months = await storageGet('budget-months');
@@ -1727,7 +1896,7 @@ html, body {
       DETAIL_CONFIG.forEach((cfg) => {
         catTotals[cfg.category] = (d.expenses || []).filter(i => i.category === cfg.category).reduce((s, i) => s + i.amount, 0);
       });
-      rows.push({ key, label: monthLabel(key), totalRevenu, totalDepenses, solde: totalRevenu - totalDepenses, catTotals });
+      rows.push({ key, label: monthLabel(key), totalRevenu, totalDepenses, solde: computeTotals(d).misDeCote, catTotals });
     }
     return rows.reverse();
   }
@@ -1737,7 +1906,7 @@ html, body {
       '<div class="evolution-card">' +
         '<div class="evolution-head">' +
           '<span class="evolution-month">' + row.label + '</span>' +
-          '<span class="evolution-solde ' + (row.solde >= 0 ? 'pos' : 'neg') + '">' + fmt(row.solde) + '</span>' +
+          '<span class="evolution-solde pos">' + fmt(row.solde) + ' mis de côté</span>' +
         '</div>' +
         '<div class="evolution-sub">' +
           '<span>↑ Revenus ' + fmt(row.totalRevenu) + '</span>' +
