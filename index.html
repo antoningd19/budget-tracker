@@ -46,7 +46,9 @@ html, body {
   --on-page-soft: #64748B;
   --shadow-card: 0 1px 2px rgba(15,23,42,0.04), 0 8px 24px rgba(15,23,42,0.06);
   --shadow-soft: 0 1px 2px rgba(15,23,42,0.04), 0 4px 12px rgba(15,23,42,0.04);
-  --hero-bg: linear-gradient(135deg, #0A0F2E 0%, #121A5C 48%, #1F2BB8 100%);
+  --hero-bg: linear-gradient(135deg, #050505 0%, #141416 45%, #26262A 100%);
+  --cta-bg: linear-gradient(180deg, #2A2A2E 0%, #111113 100%);
+  --cta-bg-hover: linear-gradient(180deg, #37373C 0%, #1A1A1D 100%);
   --on-hero: #FFFFFF;
   --on-hero-soft: rgba(255,255,255,0.66);
   --glass: rgba(255,255,255,0.08);
@@ -127,7 +129,7 @@ html, body {
   border-radius: var(--radius-lg);
   padding: 22px 24px 20px;
   margin-bottom: 16px;
-  box-shadow: 0 18px 40px rgba(18,26,92,0.28), 0 4px 10px rgba(18,26,92,0.16);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.28), 0 4px 10px rgba(0,0,0,0.16), inset 0 1px 0 rgba(255,255,255,0.08);
   overflow: hidden;
 }
 .budget-root .hero::before {
@@ -135,8 +137,8 @@ html, body {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(115deg, transparent 38%, rgba(255,255,255,0.07) 38%, rgba(255,255,255,0.07) 58%, transparent 58%),
-    linear-gradient(115deg, transparent 62%, rgba(255,255,255,0.05) 62%, rgba(255,255,255,0.05) 78%, transparent 78%);
+    linear-gradient(115deg, transparent 38%, rgba(255,255,255,0.045) 38%, rgba(255,255,255,0.045) 58%, transparent 58%),
+    linear-gradient(115deg, transparent 62%, rgba(255,255,255,0.03) 62%, rgba(255,255,255,0.03) 78%, transparent 78%);
   pointer-events: none;
 }
 
@@ -689,8 +691,8 @@ html, body {
   white-space: nowrap;
 }
 .budget-root .add-row button.add-btn {
-  background: var(--blue);
-  color: var(--on-blue);
+  background: var(--cta-bg);
+  color: #fff;
   border: none;
   border-radius: 100px;
   padding: 0 16px;
@@ -698,10 +700,10 @@ html, body {
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(75,75,245,0.3);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.1);
   transition: transform .15s ease, background-color .15s ease, color .15s ease;
 }
-.budget-root .add-row button.add-btn:hover { background: var(--blue-deep); transform: translateY(-1px); }
+.budget-root .add-row button.add-btn:hover { background: var(--cta-bg-hover); transform: translateY(-1px); }
 .budget-root .add-row button.add-btn:active { transform: translateY(0); }
 
 /* ---------- ratio panel ---------- */
@@ -775,8 +777,8 @@ html, body {
 .budget-root .preview-card .ptext { font-family: var(--font-body); font-size: 12.5px; color: var(--ink-soft); }
 .budget-root .preview-card .ptext b { color: var(--ink); font-weight: 700; }
 .budget-root .newmonth-btn {
-  background: var(--blue);
-  color: var(--on-blue);
+  background: var(--cta-bg);
+  color: #fff;
   border: none;
   border-radius: 100px;
   padding: 10px 18px;
@@ -785,10 +787,10 @@ html, body {
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
-  box-shadow: 0 6px 18px rgba(75,75,245,0.35);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.1);
   transition: background-color .18s ease, transform .18s ease, box-shadow .18s ease;
 }
-.budget-root .newmonth-btn:hover { background: var(--blue-deep); transform: translateY(-2px); box-shadow: 0 10px 24px rgba(75,75,245,0.42); }
+.budget-root .newmonth-btn:hover { background: var(--cta-bg-hover); transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.12); }
 .budget-root .newmonth-btn:active { transform: translateY(0); }
 
 /* ---------- evolution CTA ---------- */
