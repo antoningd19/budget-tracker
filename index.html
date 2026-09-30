@@ -54,15 +54,15 @@ html, body {
   --glass: rgba(255,255,255,0.08);
   --glass-line: rgba(255,255,255,0.14);
 
-  --c-invest: var(--blue);
-  --c-abo: #AF52DE;
-  --c-appart: #FF9F0A;
-  --c-alim: #FF375F;
-  --c-deplac: #32ADE6;
-  --c-plaisir: #FF2D55;
-  --c-epargne: #34C759;
-  --c-imprevus: #8E8E93;
-  --c-sport: #00C7BE;
+  --c-invest: #14286B;
+  --c-abo: #9AA3B5;
+  --c-appart: #2456F0;
+  --c-alim: #5C6680;
+  --c-deplac: #6E95FF;
+  --c-plaisir: #3B3F4A;
+  --c-epargne: #1B4FD0;
+  --c-imprevus: #C3C8D3;
+  --c-sport: #44526E;
 
   --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', Roboto, sans-serif;
   --font-mono: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Segoe UI', Roboto, sans-serif;
@@ -577,6 +577,10 @@ html, body {
   transition: transform .15s ease, box-shadow .15s ease;
 }
 .budget-root .row .cat-tag:hover { transform: scale(1.03); }
+.budget-root .row .cat-tag.light {
+  color: var(--ink);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%230F172A' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+}
 .budget-root .row .cat-tag:focus-visible { outline: none; box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--blue); }
 .budget-root .row .cat-tag option { color: var(--ink); background: #fff; font-family: var(--font-body); font-weight: 500; }
 
@@ -1116,6 +1120,8 @@ html, body {
     'Imprévus': 'var(--c-imprevus)',
     'Sport': 'var(--c-sport)'
   };
+  // Silver shades are too light for white text on the category tag.
+  const LIGHT_CATS = ['Abonnement', 'Imprévus'];
   const CAT_ICON = {
     'Investissement': '📈',
     'Abonnement': '🔁',
@@ -1130,9 +1136,9 @@ html, body {
   const MONTH_NAMES = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
 
   const DETAIL_CONFIG = [
-    { category: 'Alimentation', slug: 'alimentation', dataKey: 'alimentationDetails', icon: CAT_ICON['Alimentation'], iconBg: 'rgba(255,55,95,0.12)', fill: CAT_COLOR['Alimentation'], title: 'Détail dépenses alimentation', placeholder: 'Ex: courses, marché, boulangerie...', hasPaymentMethod: true },
-    { category: 'Déplacement', slug: 'deplacement', dataKey: 'deplacementDetails', icon: CAT_ICON['Déplacement'], iconBg: 'rgba(50,173,230,0.12)', fill: CAT_COLOR['Déplacement'], title: 'Détail dépenses déplacement', placeholder: 'Ex: essence, métro, péage...' },
-    { category: 'Plaisir', slug: 'plaisir', dataKey: 'plaisirDetails', icon: CAT_ICON['Plaisir'], iconBg: 'rgba(255,45,85,0.12)', fill: 'linear-gradient(90deg, #FF2D55, #FF6B9A)', title: 'Détail dépenses plaisir', placeholder: 'Ex: resto, sortie, shopping...', hasPaymentMethod: true },
+    { category: 'Alimentation', slug: 'alimentation', dataKey: 'alimentationDetails', icon: CAT_ICON['Alimentation'], iconBg: 'rgba(92,102,128,0.12)', fill: CAT_COLOR['Alimentation'], title: 'Détail dépenses alimentation', placeholder: 'Ex: courses, marché, boulangerie...', hasPaymentMethod: true },
+    { category: 'Déplacement', slug: 'deplacement', dataKey: 'deplacementDetails', icon: CAT_ICON['Déplacement'], iconBg: 'rgba(110,149,255,0.14)', fill: CAT_COLOR['Déplacement'], title: 'Détail dépenses déplacement', placeholder: 'Ex: essence, métro, péage...' },
+    { category: 'Plaisir', slug: 'plaisir', dataKey: 'plaisirDetails', icon: CAT_ICON['Plaisir'], iconBg: 'rgba(59,63,74,0.1)', fill: 'linear-gradient(90deg, #3B3F4A, #6B7280)', title: 'Détail dépenses plaisir', placeholder: 'Ex: resto, sortie, shopping...', hasPaymentMethod: true },
   ];
   const PAYMENT_METHODS = ['CB', 'Swile'];
   function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
@@ -1461,6 +1467,7 @@ html, body {
       const tag = document.createElement('select');
       tag.className = 'cat-tag';
       tag.style.backgroundColor = CAT_COLOR[item.category] || '#999';
+      if (LIGHT_CATS.includes(item.category)) tag.classList.add('light');
       CATEGORIES.forEach(c => {
         const opt = document.createElement('option');
         opt.value = c;
