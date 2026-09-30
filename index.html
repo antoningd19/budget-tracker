@@ -270,10 +270,13 @@ html, body {
 /* no bottom padding on the collapsing box, so a closed plan shows only its title */
 .budget-root .plan-panel .detail-body-inner { padding-bottom: 0; }
 .budget-root .plan-panel .plan-note { padding-bottom: 16px; }
-.budget-root .plan-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+.budget-root .plan-header { padding: 18px 20px 16px; cursor: pointer; user-select: none; }
+.budget-root .plan-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.budget-root .plan-head .phl { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); }
+.budget-root .plan-head .plan-range { font-weight: 500; margin-left: 6px; }
 .budget-root .plan-title { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
 .budget-root .plan-range { font-size: 12px; color: var(--ink-soft); }
-.budget-root .plan-total { margin-bottom: 10px; }
+.budget-root .plan-total { margin-bottom: 0; }
 .budget-root .plan-total-value { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 .budget-root .plan-total-sub { font-size: 12.5px; color: var(--ink-soft); margin-top: 2px; }
 .budget-root .plan-grid {
@@ -360,6 +363,7 @@ html, body {
   transition: transform .2s ease;
 }
 .budget-root .detail-panel.open .detail-chevron { transform: rotate(180deg); }
+@media (max-width: 480px) { .budget-root .plan-header { padding: 14px 16px 14px; } }
 
 .budget-root .detail-body {
   display: grid;
@@ -1173,19 +1177,18 @@ html, body {
     </div>
 
     <div class="detail-panel plan-panel" id="planPanel">
-      <div class="detail-header" id="planHeader">
-        <div class="phl">Plan épargne</div>
-        <div class="phr"><span class="detail-chevron">▾</span></div>
+      <div class="plan-header" id="planHeader">
+        <div class="plan-head">
+          <div class="phl">Plan épargne <span class="plan-range" id="planRange"></span></div>
+          <span class="detail-chevron">▾</span>
+        </div>
+        <div class="plan-total">
+          <div class="plan-total-value" id="planTotal">-</div>
+          <div class="plan-total-sub" id="planTotalSub"></div>
+        </div>
       </div>
       <div class="detail-body"><div class="detail-body-inner">
-      <div class="plan-head">
-        <span class="plan-range" id="planRange"></span>
-      </div>
-      <div class="plan-total">
-        <div class="plan-total-value" id="planTotal">-</div>
-        <div class="plan-total-sub" id="planTotalSub"></div>
-      </div>
-      <div class="detail-progress-track"><div class="detail-progress-fill" id="planProgress" style="--fill:#2456F0; transform:scaleX(0)"></div></div>
+      <div class="detail-progress-track" style="margin-top:2px"><div class="detail-progress-fill" id="planProgress" style="--fill:#2456F0; transform:scaleX(0)"></div></div>
       <div class="plan-grid plan-grid-head"><span>Mois</span><span>Revenus</span><span>Mis de côté</span><span>Objectif</span></div>
       <div id="planRows"></div>
       <div class="plan-note">Touche un objectif pour le modifier. Touche un mois pour l'ouvrir.</div>
