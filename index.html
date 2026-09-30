@@ -71,7 +71,7 @@ html, body {
   min-height: 100vh;
   width: 100%;
   overflow-x: hidden;
-  padding: max(32px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(70px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+  padding: max(32px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(110px, calc(env(safe-area-inset-bottom) + 96px)) max(18px, env(safe-area-inset-left));
   background: var(--page-bg);
 }
 
@@ -326,9 +326,9 @@ html, body {
 }
 .budget-root .detail-header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
   padding: 18px 20px;
   cursor: pointer;
   user-select: none;
@@ -473,6 +473,86 @@ html, body {
   transition: color .15s ease, transform .15s ease;
 }
 .budget-root .detail-item .di-del:hover { color: var(--red); transform: scale(1.2); }
+
+.budget-root .dh-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.budget-root .detail-header .detail-progress-wrap { margin-bottom: 0; }
+.budget-root .detail-perday { font-size: 12px; color: var(--ink-soft); margin-top: 7px; font-variant-numeric: tabular-nums; }
+.budget-root .detail-perday:empty { display: none; }
+.budget-root .detail-perday b { color: var(--ink); font-weight: 600; }
+.budget-root .detail-perday.over { color: var(--red); }
+/* no bottom padding on the collapsing box, so a closed envelope shows only its header */
+.budget-root .detail-panel:not(.plan-panel) .detail-body-inner { padding-bottom: 0; }
+.budget-root .detail-panel:not(.plan-panel) .detail-body-inner > .add-row { margin-bottom: 18px; }
+.budget-root .evolution-cats i { font-style: normal; font-weight: 600; font-size: 10.5px; margin-left: 3px; }
+.budget-root .evolution-cats i.up { color: var(--green); }
+.budget-root .evolution-cats i.down { color: var(--red); }
+
+/* ---------- quick add ---------- */
+.budget-root .fab {
+  position: fixed;
+  right: max(18px, env(safe-area-inset-right));
+  bottom: max(22px, calc(env(safe-area-inset-bottom) + 14px));
+  z-index: 40;
+  width: 58px; height: 58px;
+  border-radius: 50%;
+  border: none;
+  background: var(--cta-bg);
+  color: #fff;
+  font-size: 30px; font-weight: 300; line-height: 1;
+  box-shadow: 0 10px 26px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.12);
+  cursor: pointer;
+  transition: transform .15s ease;
+}
+.budget-root .fab:active { transform: scale(0.92); }
+.budget-root .sheet-backdrop {
+  position: fixed; inset: 0; z-index: 60;
+  background: rgba(15,23,42,0.35);
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s ease;
+}
+.budget-root .sheet {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 61;
+  max-width: 560px; margin: 0 auto;
+  background: var(--white);
+  border-radius: 24px 24px 0 0;
+  padding: 10px 20px max(20px, calc(env(safe-area-inset-bottom) + 12px));
+  box-shadow: 0 -10px 30px rgba(15,23,42,0.15);
+  transform: translateY(105%);
+  transition: transform .28s cubic-bezier(0.25, 1, 0.5, 1);
+  display: flex; flex-direction: column; gap: 12px;
+}
+body.sheet-open .budget-root .sheet { transform: translateY(0); }
+body.sheet-open .budget-root .sheet-backdrop { opacity: 1; pointer-events: auto; }
+body.sheet-open .budget-root .fab { opacity: 0; pointer-events: none; }
+.budget-root .sheet-grip { width: 40px; height: 5px; border-radius: 3px; background: var(--cream-line); margin: 0 auto 2px; }
+.budget-root .sheet-title { font-size: 17px; font-weight: 600; text-align: center; }
+.budget-root .seg { display: flex; gap: 6px; background: var(--cream); border-radius: 14px; padding: 4px; }
+.budget-root .seg button {
+  flex: 1; border: none; background: transparent; border-radius: 10px;
+  padding: 9px 4px; font: inherit; font-size: 12.5px; font-weight: 600; color: var(--ink-soft); cursor: pointer;
+}
+.budget-root .seg button.on { background: var(--white); color: var(--ink); box-shadow: var(--shadow-soft); }
+.budget-root .sheet-amount {
+  border: none; background: none; text-align: center;
+  font: inherit; font-size: 40px; font-weight: 600; letter-spacing: -0.02em; color: var(--ink);
+  padding: 4px 0;
+}
+.budget-root .sheet-amount:focus { outline: none; }
+.budget-root .sheet-amount::-webkit-outer-spin-button,
+.budget-root .sheet-amount::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.budget-root .sheet-amount { -moz-appearance: textfield; appearance: textfield; }
+.budget-root .sheet-input {
+  width: 100%; min-width: 0;
+  background: var(--cream); border: 1px solid var(--cream-line); border-radius: 12px;
+  padding: 11px 12px; font: inherit; font-size: 16px; color: var(--ink);
+}
+.budget-root .sheet-row { display: flex; gap: 8px; }
+.budget-root .sheet-add {
+  border: none; border-radius: 100px; padding: 14px;
+  background: var(--cta-bg); color: #fff;
+  font: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
 
 /* ---------- sub-categories inside an envelope ---------- */
 .budget-root .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; margin-bottom: 14px; }
@@ -1004,7 +1084,7 @@ html, body {
 .budget-root .undo-toast {
   position: fixed;
   left: 50%;
-  bottom: max(20px, calc(env(safe-area-inset-bottom) + 12px));
+  bottom: max(92px, calc(env(safe-area-inset-bottom) + 84px));
   z-index: 50;
   display: flex;
   align-items: center;
@@ -1211,6 +1291,21 @@ html, body {
 
   </div>
 
+  <button class="fab" id="fabBtn" aria-label="Ajouter une dépense">+</button>
+  <div class="sheet-backdrop" id="sheetBackdrop"></div>
+  <div class="sheet" id="quickSheet" role="dialog" aria-label="Ajouter une dépense">
+    <div class="sheet-grip"></div>
+    <div class="sheet-title">Nouvelle dépense</div>
+    <div class="seg" id="quickEnv"></div>
+    <input class="sheet-amount" id="quickAmount" type="number" inputmode="decimal" placeholder="0,00 €">
+    <input class="sheet-input" id="quickLabel" type="text" placeholder="Libellé (facultatif)">
+    <div class="sheet-row">
+      <select class="sheet-input" id="quickSub"></select>
+      <input class="sheet-input" id="quickDate" type="date">
+    </div>
+    <button class="sheet-add" id="quickAddBtn">Ajouter</button>
+  </div>
+
   <div class="undo-toast" id="undoToast">
     <span id="undoToastText">Ligne supprimée</span>
     <button class="undo-btn" id="undoToastBtn">Annuler</button>
@@ -1286,7 +1381,8 @@ html, body {
     ]
   };
 
-  let currentKey = '2026-07';
+  const todayKey = (() => { const n = new Date(); return n.getFullYear() + '-' + String(n.getMonth() + 1).padStart(2, '0'); })();
+  let currentKey = todayKey;
   let data = null;
   let idCounter = 1000;
   let prevSolde = null;
@@ -1521,23 +1617,26 @@ html, body {
     return (
       '<div class="detail-panel" id="' + cfg.slug + 'Panel">' +
         '<div class="detail-header" id="' + cfg.slug + 'Header">' +
-          '<div class="phl">' + cfg.title + '</div>' +
-          '<div class="phr">' +
-            '<span class="detail-summary" id="' + cfg.slug + 'Summary">-</span>' +
-            '<span class="detail-chevron">▾</span>' +
+          '<div class="dh-top">' +
+            '<div class="phl">' + cfg.title + '</div>' +
+            '<div class="phr">' +
+              '<span class="detail-summary" id="' + cfg.slug + 'Summary">-</span>' +
+              '<span class="detail-chevron">▾</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="detail-progress-wrap">' +
+            '<div class="detail-progress-labels">' +
+              '<span id="' + cfg.slug + 'SpentLabel">0,00 € dépensés</span>' +
+              '<span id="' + cfg.slug + 'BudgetLabel">enveloppe 0,00 €</span>' +
+            '</div>' +
+            '<div class="detail-progress-track">' +
+              '<div class="detail-progress-fill" id="' + cfg.slug + 'ProgressFill" style="--fill:' + cfg.fill + '; transform:scaleX(0)"></div>' +
+            '</div>' +
+            '<div class="detail-perday" id="' + cfg.slug + 'PerDay"></div>' +
           '</div>' +
         '</div>' +
         '<div class="detail-body">' +
           '<div class="detail-body-inner">' +
-            '<div class="detail-progress-wrap">' +
-              '<div class="detail-progress-labels">' +
-                '<span id="' + cfg.slug + 'SpentLabel">0,00 € dépensés</span>' +
-                '<span id="' + cfg.slug + 'BudgetLabel">enveloppe 0,00 €</span>' +
-              '</div>' +
-              '<div class="detail-progress-track">' +
-                '<div class="detail-progress-fill" id="' + cfg.slug + 'ProgressFill" style="--fill:' + cfg.fill + '; transform:scaleX(0)"></div>' +
-              '</div>' +
-            '</div>' +
             '<div class="sub-grid" id="' + cfg.slug + 'Subs"></div>' +
             '<div class="detail-list" id="' + cfg.slug + 'List"></div>' +
             '<div class="add-row">' +
@@ -1746,6 +1845,15 @@ html, body {
     }
   }
 
+  // Jours restants dans le mois affiché, aujourd'hui compris (0 pour un mois passé).
+  function daysLeft(key) {
+    const [y, m] = key.split('-').map(Number);
+    const inMonth = new Date(y, m, 0).getDate();
+    if (key < todayKey) return 0;
+    if (key > todayKey) return inMonth;
+    return inMonth - new Date().getDate() + 1;
+  }
+
   function renderSubGrid(cfg, details) {
     if (!cfg.subs.length) return;
     const plafonds = data.subBudgets[cfg.category];
@@ -1791,6 +1899,17 @@ html, body {
     $('#' + cfg.slug + 'SpentLabel').textContent = fmt(spent) + ' dépensés';
     renderSubGrid(cfg, details);
     $('#' + cfg.slug + 'BudgetLabel').textContent = (remaining >= 0 ? 'reste ' + fmt(remaining) : 'dépassement de ' + fmt(Math.abs(remaining))) + ' (enveloppe ' + fmt(budget) + ')';
+    const days = daysLeft(currentKey);
+    const perDay = $('#' + cfg.slug + 'PerDay');
+    if (budget <= 0 || days === 0) {
+      perDay.textContent = '';
+    } else if (remaining <= 0) {
+      perDay.textContent = remaining < 0 ? 'Enveloppe dépassée : chaque dépense réduit ton épargne' : 'Enveloppe vide pour ce mois';
+      perDay.className = 'detail-perday over';
+    } else {
+      perDay.innerHTML = '<b>' + fmt(remaining / days) + ' / jour</b> pendant ' + days + (days > 1 ? ' jours' : ' jour');
+      perDay.className = 'detail-perday';
+    }
 
     const fill = $('#' + cfg.slug + 'ProgressFill');
     fill.style.transform = 'scaleX(' + (pct / 100) + ')';
@@ -1959,21 +2078,27 @@ html, body {
   async function loadEvolutionData() {
     let months = await storageGet('budget-months');
     if (!months) months = [];
-    const recent = months.slice().sort().slice(-6);
+    const recent = months.slice().sort().slice(-7);
     const rows = [];
     for (const key of recent) {
       const raw = await storageGet('budget:' + key);
       if (!raw) continue;
       const d = ensureDetailKeys(raw);
       const totalRevenu = (d.income || []).reduce((s, i) => s + i.amount, 0);
-      const totalDepenses = (d.expenses || []).reduce((s, i) => s + i.amount, 0);
+      const totalDepenses = computeTotals(d).depenses;
       const catTotals = {};
       CATEGORIES.forEach((c) => {
         catTotals[c] = (d.expenses || []).filter(i => i.category === c).reduce((s, i) => s + i.amount, 0);
       });
+      // Pour les enveloppes, on compare ce qui a réellement été dépensé.
+      DETAIL_CONFIG.forEach((cfg) => {
+        const spent = (d[cfg.dataKey] || []).reduce((s, i) => s + i.amount, 0);
+        if (spent > 0) catTotals[cfg.category] = spent;
+      });
       rows.push({ key, label: monthLabel(key), totalRevenu, totalDepenses, solde: computeTotals(d).misDeCote, catTotals });
     }
-    return rows.reverse();
+    rows.forEach((r, i) => { r.prev = i > 0 ? rows[i - 1] : null; });
+    return rows.slice(-6).reverse();
   }
 
   function evolutionCardHTML(row) {
@@ -1988,7 +2113,18 @@ html, body {
           '<span>↓ Dépenses ' + fmt(row.totalDepenses) + '</span>' +
         '</div>' +
         '<div class="evolution-cats">' +
-          CATEGORIES.filter((c) => row.catTotals[c] > 0).map((c) => '<span>' + CAT_ICON[c] + ' ' + c + ' <b>' + fmt(row.catTotals[c]) + '</b></span>').join('') +
+          CATEGORIES.filter((c) => row.catTotals[c] > 0 || (row.prev && row.prev.catTotals[c] > 0)).map((c) => {
+            let delta = '';
+            if (row.prev) {
+              const diff = row.catTotals[c] - row.prev.catTotals[c];
+              if (Math.abs(diff) >= 1) {
+                // Plus d'épargne ou d'investissement = bien ; plus de dépense = à surveiller.
+                const good = (c === 'Épargne' || c === 'Investissement') ? diff > 0 : diff < 0;
+                delta = ' <i class="' + (good ? 'up' : 'down') + '">' + (diff > 0 ? '+' : '−') + fmt0(Math.abs(diff)) + '</i>';
+              }
+            }
+            return '<span>' + CAT_ICON[c] + ' ' + c + ' <b>' + fmt(row.catTotals[c]) + '</b>' + delta + '</span>';
+          }).join('') +
         '</div>' +
       '</div>'
     );
@@ -2005,13 +2141,59 @@ html, body {
     if (rows.length === 0) {
       inner.innerHTML = '<div class="evolution-title">Pas encore assez d’historique, reviens dans quelques mois.</div>';
     } else {
-      inner.innerHTML = '<div class="evolution-title">' + rows.length + (rows.length > 1 ? ' derniers mois' : ' dernier mois') + '</div>' + rows.map(evolutionCardHTML).join('');
+      inner.innerHTML = '<div class="evolution-title">' + rows.length + (rows.length > 1 ? ' derniers mois' : ' dernier mois') + ' · écart par rapport au mois précédent</div>' + rows.map(evolutionCardHTML).join('');
     }
   };
 
   populateCategorySelect();
   buildDetailPanels();
   $('#planHeader').onclick = () => { $('#planPanel').classList.toggle('open'); };
+
+  // ---------- ajout rapide ----------
+  let quickCfg = DETAIL_CONFIG[0];
+  function selectQuickEnv(cfg) {
+    quickCfg = cfg;
+    document.querySelectorAll('#quickEnv button').forEach((b) => b.classList.toggle('on', b.dataset.slug === cfg.slug));
+    const sub = $('#quickSub');
+    sub.style.display = cfg.subs.length ? '' : 'none';
+    sub.innerHTML = cfg.subs.map((x) => '<option>' + x + '</option>').join('');
+  }
+  $('#quickEnv').innerHTML = DETAIL_CONFIG.map((cfg) => '<button data-slug="' + cfg.slug + '">' + cfg.icon + ' ' + cfg.category + '</button>').join('');
+  document.querySelectorAll('#quickEnv button').forEach((b) => {
+    b.onclick = () => selectQuickEnv(DETAIL_CONFIG.find((c) => c.slug === b.dataset.slug));
+  });
+  function openQuickSheet() {
+    dismissUndoToast();
+    selectQuickEnv(quickCfg);
+    $('#quickAmount').value = ''; $('#quickLabel').value = '';
+    const now = new Date();
+    $('#quickDate').value = currentKey === todayKey
+      ? todayKey + '-' + String(now.getDate()).padStart(2, '0')
+      : currentKey + '-01';
+    document.body.classList.add('sheet-open');
+    setTimeout(() => $('#quickAmount').focus(), 60);
+  }
+  function closeQuickSheet() { document.body.classList.remove('sheet-open'); }
+  $('#fabBtn').onclick = openQuickSheet;
+  $('#sheetBackdrop').onclick = closeQuickSheet;
+  $('#quickAddBtn').onclick = async () => {
+    const amount = parseFloat($('#quickAmount').value);
+    if (isNaN(amount) || amount <= 0) { $('#quickAmount').focus(); return; }
+    const sub = quickCfg.subs.length ? $('#quickSub').value : null;
+    const label = $('#quickLabel').value.trim() || sub || quickCfg.category;
+    const item = { id: newId(), label, amount, date: $('#quickDate').value || currentKey + '-01', _justAdded: true };
+    if (sub) item.sub = sub;
+    data[quickCfg.dataKey].push(item);
+    closeQuickSheet();
+    render(); await save();
+    showUndoToast(fmt(amount) + ' ajouté à ' + quickCfg.category, () => {
+      const list = data[quickCfg.dataKey];
+      const idx = list.indexOf(item);
+      if (idx !== -1) list.splice(idx, 1);
+      render(); save();
+    });
+  };
+  $('#quickAmount').onkeydown = (e) => { if (e.key === 'Enter') $('#quickAddBtn').click(); };
 
   // Best-effort favicon injection using the same logo shown in the header
   try {
@@ -2024,6 +2206,16 @@ html, body {
     }
     link.href = logoSrc;
   } catch (e) { /* favicon injection best-effort only */ }
-  switchToMonth(currentKey);
+  // Ouvre le mois en cours ; s'il n'existe pas encore, le dernier mois enregistré avant lui
+  // (d'où « Créer le mois suivant » recopie les lignes récurrentes).
+  (async () => {
+    const months = (await storageGet('budget-months')) || [];
+    let start = todayKey;
+    if (!months.includes(todayKey)) {
+      const before = months.filter((k) => k < todayKey).sort();
+      if (before.length) start = before[before.length - 1];
+    }
+    switchToMonth(start);
+  })();
 })();
 </script>
