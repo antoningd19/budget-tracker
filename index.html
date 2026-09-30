@@ -54,15 +54,13 @@ html, body {
   --glass: rgba(255,255,255,0.08);
   --glass-line: rgba(255,255,255,0.14);
 
-  --c-invest: #14286B;
-  --c-abo: #9AA3B5;
-  --c-appart: #2456F0;
+  --c-fixes: #14286B;
   --c-alim: #5C6680;
   --c-deplac: #6E95FF;
+  --c-epargne: #2456F0;
   --c-plaisir: #3B3F4A;
-  --c-epargne: #1B4FD0;
-  --c-imprevus: #C3C8D3;
-  --c-sport: #44526E;
+  --c-imprevus: #9AA3B5;
+  --c-invest: #C3C8D3;
 
   --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', Roboto, sans-serif;
   --font-mono: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Segoe UI', Roboto, sans-serif;
@@ -258,6 +256,65 @@ html, body {
 .budget-root .mini-stat.revenu .label { color: #4ADE80; }
 .budget-root .mini-stat.depense .label { color: #FF8A8E; }
 
+.budget-root .balance-sub {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--on-hero-soft);
+  font-variant-numeric: tabular-nums;
+}
+.budget-root .balance-sub.neg { color: #FF8A8E; }
+.budget-root .mini-stats { grid-template-columns: 1fr 1fr 1fr; }
+.budget-root .mini-stat.invest .label { color: #8FB0FF; }
+
+/* ---------- plan épargne (octobre → avril) ---------- */
+/* no bottom padding on the collapsing box, so a closed plan shows only its title */
+.budget-root .plan-panel .detail-body-inner { padding-bottom: 0; }
+.budget-root .plan-panel .plan-note { padding-bottom: 16px; }
+.budget-root .plan-header { padding: 18px 20px 16px; cursor: pointer; user-select: none; }
+.budget-root .plan-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.budget-root .plan-head .phl { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); }
+.budget-root .plan-head .plan-range { font-weight: 500; margin-left: 6px; }
+.budget-root .plan-title { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+.budget-root .plan-range { font-size: 12px; color: var(--ink-soft); }
+.budget-root .plan-total { margin-bottom: 0; }
+.budget-root .plan-total-value { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.budget-root .plan-total-sub { font-size: 12.5px; color: var(--ink-soft); margin-top: 2px; }
+.budget-root .plan-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1fr 0.9fr;
+  align-items: center;
+  gap: 8px;
+  font-variant-numeric: tabular-nums;
+}
+.budget-root .plan-grid > :not(:first-child) { text-align: right; }
+.budget-root .plan-grid-head { font-size: 11px; color: var(--ink-faint); margin: 16px 0 4px; }
+.budget-root .plan-row {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--white-line);
+  font-size: 13.5px;
+  cursor: pointer;
+}
+.budget-root .plan-row:last-child { border-bottom: none; }
+.budget-root .plan-row .pm { font-weight: 600; text-transform: capitalize; }
+.budget-root .plan-row.current .pm { color: #2456F0; }
+.budget-root .plan-row.future { color: var(--ink-faint); }
+.budget-root .plan-row .ps { font-weight: 600; }
+.budget-root .plan-row .ps.hit { color: #2456F0; }
+.budget-root .plan-row input.pg {
+  width: 100%;
+  border: none;
+  background: var(--cream);
+  border-radius: 8px;
+  padding: 5px 6px;
+  font: inherit;
+  font-size: 13px;
+  text-align: right;
+  color: var(--ink);
+}
+.budget-root .plan-row input.pg:focus-visible { outline: none; box-shadow: 0 0 0 2px #2456F0; background: var(--blue-tint); }
+.budget-root .plan-row input.pg::placeholder { color: var(--ink-faint); }
+.budget-root .plan-note { font-size: 11px; color: var(--ink-faint); margin-top: 10px; }
+
 /* ---------- category detail accordions (plaisir / alimentation / deplacement) ---------- */
 .budget-root .detail-panel {
   background: var(--white);
@@ -306,6 +363,7 @@ html, body {
   transition: transform .2s ease;
 }
 .budget-root .detail-panel.open .detail-chevron { transform: rotate(180deg); }
+@media (max-width: 480px) { .budget-root .plan-header { padding: 14px 16px 14px; } }
 
 .budget-root .detail-body {
   display: grid;
@@ -405,7 +463,6 @@ html, body {
   transition: background-color .15s ease, transform .1s ease;
 }
 .budget-root .detail-item .di-method:active { transform: scale(0.94); }
-.budget-root .detail-item .di-method.swile { background: #C94526; }
 .budget-root .detail-item .di-del {
   background: none;
   border: none;
@@ -416,6 +473,32 @@ html, body {
   transition: color .15s ease, transform .15s ease;
 }
 .budget-root .detail-item .di-del:hover { color: var(--red); transform: scale(1.2); }
+
+/* ---------- sub-categories inside an envelope ---------- */
+.budget-root .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; margin-bottom: 14px; }
+.budget-root .sub-row { min-width: 0; }
+.budget-root .sub-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 5px; }
+.budget-root .sub-name { font-size: 12.5px; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.budget-root .sub-amt { display: inline-flex; align-items: center; gap: 2px; font-size: 11.5px; color: var(--ink-soft); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.budget-root .sub-amt.over { color: var(--red); }
+.budget-root .sub-cap {
+  width: 64px; border: none; background: var(--cream); border-radius: 6px;
+  padding: 3px 5px; font: inherit; font-size: 11.5px; text-align: right; color: var(--ink);
+}
+.budget-root .sub-cap:focus-visible { outline: none; box-shadow: 0 0 0 2px #2456F0; }
+.budget-root .sub-cap::placeholder { color: var(--ink-faint); }
+.budget-root .sub-track { height: 5px; border-radius: 3px; background: #ECEEF4; overflow: hidden; }
+.budget-root .sub-fill { height: 100%; border-radius: 3px; transition: width .25s ease; }
+.budget-root .sub-fill.over { background: var(--red) !important; }
+.budget-root .detail-item .di-sub {
+  flex-shrink: 0; max-width: 104px; border: none; border-radius: 20px;
+  background: var(--cream); color: var(--ink-soft); font: inherit; font-size: 10.5px; font-weight: 600;
+  padding: 3px 6px; cursor: pointer;
+}
+@media (max-width: 480px) {
+  .budget-root .sub-grid { grid-template-columns: 1fr; }
+  .budget-root .detail-item .di-sub { max-width: 86px; }
+}
 
 /* ---------- legend ---------- */
 .budget-root .legend {
@@ -708,6 +791,7 @@ html, body {
   box-shadow: 0 4px 12px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.1);
   transition: transform .15s ease, background-color .15s ease, color .15s ease;
 }
+.budget-root .add-row button.add-btn { min-height: 32px; }
 .budget-root .add-row button.add-btn:hover { background: var(--cta-bg-hover); transform: translateY(-1px); }
 .budget-root .add-row button.add-btn:active { transform: translateY(0); }
 
@@ -810,12 +894,12 @@ html, body {
   font-family: var(--font-mono);
   font-size: 14px;
   font-weight: 600;
-  color: var(--blue);
+  color: #2456F0;
   cursor: pointer;
   box-shadow: var(--shadow-soft);
   transition: background-color .18s ease, border-color .18s ease, transform .15s ease;
 }
-.budget-root .evolution-cta:hover { background: var(--blue-tint); }
+.budget-root .evolution-cta:hover { background: rgba(36,86,240,0.08); }
 .budget-root .evolution-cta:active { transform: scale(0.98); }
 
 .budget-root .evolution-panel {
@@ -858,7 +942,7 @@ html, body {
   color: var(--ink-soft);
 }
 .budget-root .evolution-solde { font-family: var(--font-mono); font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; }
-.budget-root .evolution-solde.pos { color: var(--green); }
+.budget-root .evolution-solde.pos { color: #2456F0; font-size: 14px; }
 .budget-root .evolution-solde.neg { color: var(--red); }
 .budget-root .evolution-sub {
   display: flex;
@@ -969,7 +1053,10 @@ html, body {
   .budget-root .balance-value { font-size: 36px; }
   .budget-root .mini-stats { gap: 8px; }
   .budget-root .mini-stat { padding: 10px 12px; border-radius: 14px; }
-  .budget-root .mini-stat .value { font-size: 15px; }
+  .budget-root .mini-stat .value { font-size: 14px; }
+  .budget-root .mini-stat .label { font-size: 11px; }
+  .budget-root .mini-stat { padding: 10px 10px; }
+  .budget-root .plan-row { font-size: 12.5px; }
 
   .budget-root .detail-panel, .budget-root .ratio-panel, .budget-root .panel { border-radius: 18px; }
   .budget-root .detail-header { padding: 14px 16px; }
@@ -1032,8 +1119,9 @@ html, body {
         <button class="arrow" id="nextBtn">›</button>
       </div>
       <div class="balance-block month-fade">
-        <div class="balance-label">Livret (solde du mois)</div>
-        <div class="balance-value" id="totalSolde">-</div>
+        <div class="balance-label">Mis de côté ce mois</div>
+        <div class="balance-value" id="totalEpargne">-</div>
+        <div class="balance-sub" id="tauxEpargne"></div>
       </div>
       <div class="mini-stats month-fade">
         <div class="mini-stat revenu">
@@ -1043,6 +1131,10 @@ html, body {
         <div class="mini-stat depense">
           <div class="label">↓ Dépenses</div>
           <div class="value" id="totalDepenses">-</div>
+        </div>
+        <div class="mini-stat invest">
+          <div class="label">↗ Investi</div>
+          <div class="value" id="totalInvesti">-</div>
         </div>
       </div>
     </div>
@@ -1084,6 +1176,25 @@ html, body {
       <div id="ratioRows"></div>
     </div>
 
+    <div class="detail-panel plan-panel" id="planPanel">
+      <div class="plan-header" id="planHeader">
+        <div class="plan-head">
+          <div class="phl">Plan épargne <span class="plan-range" id="planRange"></span></div>
+          <span class="detail-chevron">▾</span>
+        </div>
+        <div class="plan-total">
+          <div class="plan-total-value" id="planTotal">-</div>
+          <div class="plan-total-sub" id="planTotalSub"></div>
+        </div>
+      </div>
+      <div class="detail-body"><div class="detail-body-inner">
+      <div class="detail-progress-track" style="margin-top:2px"><div class="detail-progress-fill" id="planProgress" style="--fill:#2456F0; transform:scaleX(0)"></div></div>
+      <div class="plan-grid plan-grid-head"><span>Mois</span><span>Revenus</span><span>Mis de côté</span><span>Objectif</span></div>
+      <div id="planRows"></div>
+      <div class="plan-note">Touche un objectif pour le modifier. Touche un mois pour l'ouvrir.</div>
+      </div></div>
+    </div>
+
     <div class="preview-card">
       <div class="ptext" id="previewText">Aperçu du mois prochain…</div>
       <button class="newmonth-btn" id="newMonthBtn">Créer le mois suivant <span aria-hidden="true">→</span></button>
@@ -1108,46 +1219,48 @@ html, body {
 
 <script>
 (function() {
-  const CATEGORIES = ['Investissement','Abonnement','Appartement','Alimentation','Déplacement','Plaisir','Épargne','Imprévus','Sport'];
+  // Les 4 enveloppes du budget, plus l'investissement suivi à part (jamais compté comme épargne).
+  const CATEGORIES = ['Charges fixes','Alimentation','Déplacement','Épargne','Plaisir','Imprévus','Investissement'];
   const CAT_COLOR = {
-    'Investissement': 'var(--c-invest)',
-    'Abonnement': 'var(--c-abo)',
-    'Appartement': 'var(--c-appart)',
+    'Charges fixes': 'var(--c-fixes)',
     'Alimentation': 'var(--c-alim)',
     'Déplacement': 'var(--c-deplac)',
-    'Plaisir': 'var(--c-plaisir)',
     'Épargne': 'var(--c-epargne)',
+    'Plaisir': 'var(--c-plaisir)',
     'Imprévus': 'var(--c-imprevus)',
-    'Sport': 'var(--c-sport)'
+    'Investissement': 'var(--c-invest)'
   };
   // Silver shades are too light for white text on the category tag.
-  const LIGHT_CATS = ['Abonnement', 'Imprévus'];
+  const LIGHT_CATS = ['Imprévus', 'Investissement'];
   const CAT_ICON = {
-    'Investissement': '📈',
-    'Abonnement': '🔁',
-    'Appartement': '🏠',
+    'Charges fixes': '🏠',
     'Alimentation': '🛒',
     'Déplacement': '🚌',
-    'Plaisir': '🎉',
     'Épargne': '💰',
+    'Plaisir': '🎉',
     'Imprévus': '⚠️',
-    'Sport': '🤸'
+    'Investissement': '📈'
+  };
+  // Anciennes catégories -> nouvelles enveloppes.
+  const OLD_CAT_MAP = {
+    'Appartement': 'Charges fixes', 'Abonnement': 'Charges fixes',
+    'Sport': 'Plaisir'
   };
   const MONTH_NAMES = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
 
   const DETAIL_CONFIG = [
-    { category: 'Alimentation', slug: 'alimentation', dataKey: 'alimentationDetails', icon: CAT_ICON['Alimentation'], iconBg: 'rgba(92,102,128,0.12)', fill: CAT_COLOR['Alimentation'], title: 'Détail dépenses alimentation', placeholder: 'Ex: courses, marché, boulangerie...', hasPaymentMethod: true },
-    { category: 'Déplacement', slug: 'deplacement', dataKey: 'deplacementDetails', icon: CAT_ICON['Déplacement'], iconBg: 'rgba(110,149,255,0.14)', fill: CAT_COLOR['Déplacement'], title: 'Détail dépenses déplacement', placeholder: 'Ex: essence, métro, péage...' },
-    { category: 'Plaisir', slug: 'plaisir', dataKey: 'plaisirDetails', icon: CAT_ICON['Plaisir'], iconBg: 'rgba(59,63,74,0.1)', fill: 'linear-gradient(90deg, #3B3F4A, #6B7280)', title: 'Détail dépenses plaisir', placeholder: 'Ex: resto, sortie, shopping...', hasPaymentMethod: true },
+    { category: 'Alimentation', slug: 'alimentation', dataKey: 'alimentationDetails', icon: CAT_ICON['Alimentation'], fill: CAT_COLOR['Alimentation'], title: 'Enveloppe alimentation', placeholder: 'Ex: courses, marché...', subs: [] },
+    { category: 'Déplacement', slug: 'deplacement', dataKey: 'deplacementDetails', icon: CAT_ICON['Déplacement'], fill: CAT_COLOR['Déplacement'], title: 'Enveloppe déplacement', placeholder: 'Ex: essence, métro, péage...', subs: [] },
+    { category: 'Plaisir', slug: 'plaisir', dataKey: 'plaisirDetails', icon: CAT_ICON['Plaisir'], fill: CAT_COLOR['Plaisir'], title: 'Enveloppe plaisir', placeholder: 'Ex: resto, ciné...',
+      subs: ['Restaurants', 'Bars', 'Fast-food', 'Sport', 'Achats plaisir', 'Cadeaux'] },
   ];
-  const PAYMENT_METHODS = ['CB', 'Swile'];
+  const OTHER_SUB = 'Autre';
   function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
   const DEFAULT_JULY_2026 = {
     income: [
       { id: 'i1', label: 'Salaire', amount: 1350, recurring: true },
       { id: 'i2', label: 'Reste sur compte', amount: 0, recurring: false },
-      { id: 'i3', label: 'Swile', amount: 120, recurring: true },
       { id: 'i4', label: "Prime d'activité", amount: 172.42, recurring: true },
       { id: 'i5', label: 'APL', amount: 304, recurring: true },
       { id: 'i6', label: 'Adrien (Avril)', amount: 250, recurring: false },
@@ -1355,6 +1468,12 @@ html, body {
 
   function ensureDetailKeys(d) {
     DETAIL_CONFIG.forEach((cfg) => { if (!d[cfg.dataKey]) d[cfg.dataKey] = []; });
+    if (!d.subBudgets) d.subBudgets = {};
+    DETAIL_CONFIG.forEach((cfg) => { if (!d.subBudgets[cfg.category]) d.subBudgets[cfg.category] = {}; });
+    (d.expenses || []).forEach((i) => {
+      if (OLD_CAT_MAP[i.category]) i.category = OLD_CAT_MAP[i.category];
+      if (!CATEGORIES.includes(i.category)) i.category = 'Charges fixes';
+    });
     return d;
   }
 
@@ -1366,6 +1485,29 @@ html, body {
       return ensureDetailKeys(d);
     }
     return ensureDetailKeys({ income: [], expenses: [] });
+  }
+
+  // Savings = explicit "Épargne" lines + whatever is left at the end of the month.
+  // Investments are tracked separately and never count as savings.
+  function computeTotals(d) {
+    const income = d.income || [], expenses = d.expenses || [];
+    const revenu = income.reduce((s, i) => s + i.amount, 0);
+    const sumCat = (c) => expenses.filter(i => i.category === c).reduce((s, i) => s + i.amount, 0);
+    const epargneLignes = sumCat('Épargne');
+    const investi = sumCat('Investissement');
+    // Une enveloppe dépassée coûte ce qui a réellement été dépensé.
+    const depassement = DETAIL_CONFIG.reduce((s, cfg) => {
+      const spent = (d[cfg.dataKey] || []).reduce((a, i) => a + i.amount, 0);
+      return s + Math.max(0, spent - sumCat(cfg.category));
+    }, 0);
+    const toutesDepenses = expenses.reduce((s, i) => s + i.amount, 0) + depassement;
+    const solde = revenu - toutesDepenses;
+    const misDeCote = epargneLignes + Math.max(0, solde);
+    return {
+      revenu, investi, solde, misDeCote,
+      depenses: toutesDepenses - epargneLignes - investi,
+      taux: revenu > 0 ? (misDeCote / revenu) * 100 : 0
+    };
   }
 
   function newId() { idCounter++; return 'x' + idCounter + Date.now(); }
@@ -1396,11 +1538,13 @@ html, body {
                 '<div class="detail-progress-fill" id="' + cfg.slug + 'ProgressFill" style="--fill:' + cfg.fill + '; transform:scaleX(0)"></div>' +
               '</div>' +
             '</div>' +
+            '<div class="sub-grid" id="' + cfg.slug + 'Subs"></div>' +
             '<div class="detail-list" id="' + cfg.slug + 'List"></div>' +
             '<div class="add-row">' +
               '<input type="text" id="' + cfg.slug + 'Label" placeholder="' + cfg.placeholder + '">' +
               '<input type="date" id="' + cfg.slug + 'Date">' +
               '<input type="number" id="' + cfg.slug + 'Amount" placeholder="€">' +
+              (cfg.subs.length ? '<select id="' + cfg.slug + 'Sub">' + cfg.subs.map((x) => '<option>' + x + '</option>').join('') + '</select>' : '') +
               '<button class="add-btn" id="add' + cap(cfg.slug) + 'Btn">Ajouter</button>' +
             '</div>' +
           '</div>' +
@@ -1424,7 +1568,7 @@ html, body {
         if (!label || isNaN(amount)) return;
         if (!data[cfg.dataKey]) data[cfg.dataKey] = [];
         const newItem = { id: newId(), label, amount, date, _justAdded: true };
-        if (cfg.hasPaymentMethod) newItem.method = 'CB';
+        if (cfg.subs.length) newItem.sub = $('#' + cfg.slug + 'Sub').value;
         data[cfg.dataKey].push(newItem);
         $('#' + cfg.slug + 'Label').value = ''; $('#' + cfg.slug + 'Amount').value = ''; $('#' + cfg.slug + 'Date').value = '';
         render(); await save();
@@ -1521,24 +1665,35 @@ html, body {
     const totalRevenu = data.income.reduce((s, i) => s + i.amount, 0);
     const totalDepenses = data.expenses.reduce((s, i) => s + i.amount, 0);
     const solde = totalRevenu - totalDepenses;
+    const t = computeTotals(data);
 
-    $('#totalRevenu').textContent = fmt(totalRevenu);
-    $('#totalDepenses').textContent = fmt(totalDepenses);
-    const soldeEl = $('#totalSolde');
-    const soldeChanged = prevSolde !== null && prevSolde !== solde;
-    soldeEl.textContent = fmt(solde);
-    soldeEl.className = 'balance-value ' + (solde >= 0 ? 'pos' : 'neg');
-    if (soldeChanged) {
-      soldeEl.classList.add('pulse');
-      soldeEl.addEventListener('animationend', () => soldeEl.classList.remove('pulse'), { once: true });
+    $('#totalRevenu').textContent = fmt(t.revenu);
+    $('#totalDepenses').textContent = fmt(t.depenses);
+    $('#totalInvesti').textContent = fmt(t.investi);
+    const epEl = $('#totalEpargne');
+    const epChanged = prevSolde !== null && prevSolde !== t.misDeCote;
+    epEl.textContent = fmt(t.misDeCote);
+    epEl.className = 'balance-value pos';
+    if (epChanged) {
+      epEl.classList.add('pulse');
+      epEl.addEventListener('animationend', () => epEl.classList.remove('pulse'), { once: true });
     }
-    prevSolde = solde;
+    prevSolde = t.misDeCote;
+    const sub = $('#tauxEpargne');
+    if (t.solde < 0) {
+      sub.textContent = 'Dépassement de ' + fmt(-t.solde) + ' ce mois';
+      sub.className = 'balance-sub neg';
+    } else {
+      sub.textContent = t.revenu > 0 ? 'Taux d’épargne ' + t.taux.toLocaleString('fr-FR', { maximumFractionDigits: 1 }) + ' %' : '';
+      sub.className = 'balance-sub';
+    }
 
     $('#revenuSum').textContent = fmt(totalRevenu);
     $('#depenseSum').textContent = fmt(totalDepenses);
 
-    renderRatios(solde);
+    renderRatios(t.solde);
     renderPreview();
+    renderPlan();
     DETAIL_CONFIG.forEach(renderDetailPanel);
   }
 
@@ -1553,6 +1708,10 @@ html, body {
     const byCat = {};
     CATEGORIES.forEach(c => byCat[c] = 0);
     data.expenses.forEach(i => { byCat[i.category] = (byCat[i.category] || 0) + i.amount; });
+    DETAIL_CONFIG.forEach((cfg) => {
+      const spent = (data[cfg.dataKey] || []).reduce((s, i) => s + i.amount, 0);
+      byCat[cfg.category] = Math.max(byCat[cfg.category], spent);
+    });
     if (solde > 0) byCat['Épargne'] += solde;
 
     let grandTotal = Object.values(byCat).reduce((s, v) => s + v, 0);
@@ -1587,6 +1746,40 @@ html, body {
     }
   }
 
+  function renderSubGrid(cfg, details) {
+    if (!cfg.subs.length) return;
+    const plafonds = data.subBudgets[cfg.category];
+    const bySub = {};
+    details.forEach((i) => { const k = cfg.subs.includes(i.sub) ? i.sub : OTHER_SUB; bySub[k] = (bySub[k] || 0) + i.amount; });
+    const subs = bySub[OTHER_SUB] ? cfg.subs.concat([OTHER_SUB]) : cfg.subs;
+    const grid = $('#' + cfg.slug + 'Subs');
+    grid.innerHTML = '';
+    subs.forEach((sub) => {
+      const spent = bySub[sub] || 0;
+      const plafond = plafonds[sub] || 0;
+      const over = plafond > 0 && spent > plafond;
+      const row = document.createElement('div');
+      row.className = 'sub-row';
+      row.innerHTML =
+        '<div class="sub-top">' +
+          '<span class="sub-name">' + sub + '</span>' +
+          '<span class="sub-amt' + (over ? ' over' : '') + '">' + fmt(spent) + (sub === OTHER_SUB ? '' : ' / ') + '</span>' +
+        '</div>' +
+        '<div class="sub-track"><div class="sub-fill' + (over ? ' over' : '') + '" style="background:' + cfg.fill + '; width:' + (plafond > 0 ? Math.min(100, spent / plafond * 100) : 0) + '%"></div></div>';
+      if (sub !== OTHER_SUB) {
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.inputMode = 'decimal';
+        input.className = 'sub-cap';
+        input.placeholder = 'plafond';
+        input.value = plafond || '';
+        input.onchange = async () => { plafonds[sub] = parseFloat(input.value) || 0; render(); await save(); };
+        row.querySelector('.sub-amt').appendChild(input);
+      }
+      grid.appendChild(row);
+    });
+  }
+
   function renderDetailPanel(cfg) {
     const budget = data.expenses.filter(i => i.category === cfg.category).reduce((s, i) => s + i.amount, 0);
     const details = data[cfg.dataKey] || [];
@@ -1595,12 +1788,8 @@ html, body {
     const pct = budget > 0 ? Math.min(100, (spent / budget) * 100) : 0;
 
     $('#' + cfg.slug + 'Summary').textContent = fmt(spent) + ' / ' + fmt(budget);
-    let spentLabel = fmt(spent) + ' dépensés';
-    if (cfg.hasPaymentMethod) {
-      const spentSwile = details.filter(i => i.method === 'Swile').reduce((s, i) => s + i.amount, 0);
-      if (spentSwile > 0) spentLabel += ' (dont ' + fmt(spentSwile) + ' via Swile)';
-    }
-    $('#' + cfg.slug + 'SpentLabel').textContent = spentLabel;
+    $('#' + cfg.slug + 'SpentLabel').textContent = fmt(spent) + ' dépensés';
+    renderSubGrid(cfg, details);
     $('#' + cfg.slug + 'BudgetLabel').textContent = (remaining >= 0 ? 'reste ' + fmt(remaining) : 'dépassement de ' + fmt(Math.abs(remaining))) + ' (enveloppe ' + fmt(budget) + ')';
 
     const fill = $('#' + cfg.slug + 'ProgressFill');
@@ -1621,16 +1810,13 @@ html, body {
           '<span class="di-date">' + dateStr + '</span>' +
           '<span class="di-label">' + item.label + '</span>';
 
-        if (cfg.hasPaymentMethod) {
-          const method = document.createElement('button');
-          method.className = 'di-method' + (item.method === 'Swile' ? ' swile' : '');
-          method.textContent = item.method === 'Swile' ? 'Swile' : 'CB';
-          method.title = 'Payé en ' + (item.method === 'Swile' ? 'Swile' : 'CB') + ' - cliquer pour changer';
-          method.onclick = () => {
-            item.method = item.method === 'Swile' ? 'CB' : 'Swile';
-            save(); render();
-          };
-          row.appendChild(method);
+        if (cfg.subs.length) {
+        const subSel = document.createElement('select');
+        subSel.className = 'di-sub';
+        const opts = cfg.subs.includes(item.sub) ? cfg.subs : [OTHER_SUB].concat(cfg.subs);
+        subSel.innerHTML = opts.map((x) => '<option' + (x === (item.sub || OTHER_SUB) ? ' selected' : '') + '>' + x + '</option>').join('');
+        subSel.onchange = () => { item.sub = subSel.value; save(); render(); };
+        row.appendChild(subSel);
         }
 
         const amount = document.createElement('span');
@@ -1653,6 +1839,62 @@ html, body {
         }
       });
     }
+  }
+
+  const PLAN_MONTHS = ['2026-10','2026-11','2026-12','2027-01','2027-02','2027-03','2027-04'];
+  // Octobre / novembre : pas d'objectif fixe (bonus). Saison : 1 000 € par défaut, modifiable.
+  const DEFAULT_GOALS = { '2026-12': 1000, '2027-01': 1000, '2027-02': 1000, '2027-03': 1000, '2027-04': 1000 };
+  const SHORT_MONTHS = ['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+  const shortLabel = (key) => { const [y, m] = key.split('-'); return SHORT_MONTHS[+m - 1] + ' ' + y.slice(2); };
+  const fmt0 = (n) => Math.round(n).toLocaleString('fr-FR') + ' €';
+
+  async function getGoals() {
+    const g = await storageGet('budget-plan-goals');
+    return Object.assign({}, DEFAULT_GOALS, g || {});
+  }
+
+  async function renderPlan() {
+    const goals = await getGoals();
+    const container = $('#planRows');
+    $('#planRange').textContent = shortLabel(PLAN_MONTHS[0]) + ' → ' + shortLabel(PLAN_MONTHS[PLAN_MONTHS.length - 1]);
+    let totalSaved = 0, totalGoal = 0;
+    const rows = [];
+    for (const key of PLAN_MONTHS) {
+      const raw = key === currentKey ? data : await storageGet('budget:' + key);
+      const d = raw ? ensureDetailKeys(raw) : null;
+      const t = d ? computeTotals(d) : null;
+      const goal = goals[key] || 0;
+      totalGoal += goal;
+      if (t) totalSaved += t.misDeCote;
+      rows.push({ key, t, goal });
+    }
+    container.innerHTML = '';
+    rows.forEach(({ key, t, goal }) => {
+      const row = document.createElement('div');
+      row.className = 'plan-grid plan-row' + (key === currentKey ? ' current' : '') + (t ? '' : ' future');
+      const hit = t && goal > 0 && t.misDeCote >= goal;
+      row.innerHTML =
+        '<span class="pm">' + shortLabel(key) + '</span>' +
+        '<span>' + (t ? fmt0(t.revenu) : '-') + '</span>' +
+        '<span class="ps' + (hit ? ' hit' : '') + '">' + (t ? fmt0(t.misDeCote) : '-') + (hit ? ' ✓' : '') + '</span>' +
+        '<span><input class="pg" type="number" inputmode="decimal" placeholder="bonus" value="' + (goal || '') + '"></span>';
+      const input = row.querySelector('input.pg');
+      input.onclick = (e) => e.stopPropagation();
+      input.onchange = async () => {
+        const g = await storageGet('budget-plan-goals') || {};
+        g[key] = parseFloat(input.value) || 0;
+        await storageSet('budget-plan-goals', g);
+        renderPlan();
+      };
+      row.onclick = () => { if (key !== currentKey) { switchToMonth(key); window.scrollTo({ top: 0, behavior: 'smooth' }); } };
+      container.appendChild(row);
+    });
+    $('#planTotal').textContent = fmt(totalSaved) + ' mis de côté';
+    $('#planTotalSub').textContent = totalGoal > 0
+      ? 'Objectif ' + fmt0(totalGoal) + ' · ' + Math.round(Math.min(100, (totalSaved / totalGoal) * 100)) + ' % atteint'
+      : 'Aucun objectif défini';
+    const pct = totalGoal > 0 ? Math.min(1, totalSaved / totalGoal) : 0;
+    $('#planProgress').style.transform = 'scaleX(' + pct + ')';
   }
 
   async function save() {
@@ -1688,6 +1930,7 @@ html, body {
     const carried = ensureDetailKeys({
       income: data.income.filter(i => i.recurring).map(i => ({ ...i, id: newId() })),
       expenses: data.expenses.filter(i => i.recurring).map(i => ({ ...i, id: newId() })),
+      subBudgets: JSON.parse(JSON.stringify(data.subBudgets || {})),
     });
     currentKey = nextKey;
     data = carried;
@@ -1719,15 +1962,16 @@ html, body {
     const recent = months.slice().sort().slice(-6);
     const rows = [];
     for (const key of recent) {
-      const d = await storageGet('budget:' + key);
-      if (!d) continue;
+      const raw = await storageGet('budget:' + key);
+      if (!raw) continue;
+      const d = ensureDetailKeys(raw);
       const totalRevenu = (d.income || []).reduce((s, i) => s + i.amount, 0);
       const totalDepenses = (d.expenses || []).reduce((s, i) => s + i.amount, 0);
       const catTotals = {};
-      DETAIL_CONFIG.forEach((cfg) => {
-        catTotals[cfg.category] = (d.expenses || []).filter(i => i.category === cfg.category).reduce((s, i) => s + i.amount, 0);
+      CATEGORIES.forEach((c) => {
+        catTotals[c] = (d.expenses || []).filter(i => i.category === c).reduce((s, i) => s + i.amount, 0);
       });
-      rows.push({ key, label: monthLabel(key), totalRevenu, totalDepenses, solde: totalRevenu - totalDepenses, catTotals });
+      rows.push({ key, label: monthLabel(key), totalRevenu, totalDepenses, solde: computeTotals(d).misDeCote, catTotals });
     }
     return rows.reverse();
   }
@@ -1737,14 +1981,14 @@ html, body {
       '<div class="evolution-card">' +
         '<div class="evolution-head">' +
           '<span class="evolution-month">' + row.label + '</span>' +
-          '<span class="evolution-solde ' + (row.solde >= 0 ? 'pos' : 'neg') + '">' + fmt(row.solde) + '</span>' +
+          '<span class="evolution-solde pos">' + fmt(row.solde) + ' mis de côté</span>' +
         '</div>' +
         '<div class="evolution-sub">' +
           '<span>↑ Revenus ' + fmt(row.totalRevenu) + '</span>' +
           '<span>↓ Dépenses ' + fmt(row.totalDepenses) + '</span>' +
         '</div>' +
         '<div class="evolution-cats">' +
-          DETAIL_CONFIG.map((cfg) => '<span>' + cfg.icon + ' ' + cfg.category + ' <b>' + fmt(row.catTotals[cfg.category]) + '</b></span>').join('') +
+          CATEGORIES.filter((c) => row.catTotals[c] > 0).map((c) => '<span>' + CAT_ICON[c] + ' ' + c + ' <b>' + fmt(row.catTotals[c]) + '</b></span>').join('') +
         '</div>' +
       '</div>'
     );
@@ -1767,6 +2011,7 @@ html, body {
 
   populateCategorySelect();
   buildDetailPanels();
+  $('#planHeader').onclick = () => { $('#planPanel').classList.toggle('open'); };
 
   // Best-effort favicon injection using the same logo shown in the header
   try {
