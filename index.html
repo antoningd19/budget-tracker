@@ -267,14 +267,9 @@ html, body {
 .budget-root .mini-stat.invest .label { color: #8FB0FF; }
 
 /* ---------- plan épargne (octobre → avril) ---------- */
-.budget-root .plan-panel {
-  background: var(--white);
-  border: 1px solid rgba(15,23,42,0.04);
-  border-radius: var(--radius-lg);
-  padding: 20px 20px 16px;
-  margin-bottom: 16px;
-  box-shadow: var(--shadow-card);
-}
+/* no bottom padding on the collapsing box, so a closed plan shows only its title */
+.budget-root .plan-panel .detail-body-inner { padding-bottom: 0; }
+.budget-root .plan-panel .plan-note { padding-bottom: 16px; }
 .budget-root .plan-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
 .budget-root .plan-title { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
 .budget-root .plan-range { font-size: 12px; color: var(--ink-soft); }
@@ -1057,7 +1052,6 @@ html, body {
   .budget-root .mini-stat .value { font-size: 14px; }
   .budget-root .mini-stat .label { font-size: 11px; }
   .budget-root .mini-stat { padding: 10px 10px; }
-  .budget-root .plan-panel { padding: 16px 16px 14px; border-radius: 18px; }
   .budget-root .plan-row { font-size: 12.5px; }
 
   .budget-root .detail-panel, .budget-root .ratio-panel, .budget-root .panel { border-radius: 18px; }
@@ -1178,9 +1172,13 @@ html, body {
       <div id="ratioRows"></div>
     </div>
 
-    <div class="plan-panel">
+    <div class="detail-panel plan-panel" id="planPanel">
+      <div class="detail-header" id="planHeader">
+        <div class="phl">Plan épargne</div>
+        <div class="phr"><span class="detail-chevron">▾</span></div>
+      </div>
+      <div class="detail-body"><div class="detail-body-inner">
       <div class="plan-head">
-        <div class="plan-title">Plan épargne</div>
         <span class="plan-range" id="planRange"></span>
       </div>
       <div class="plan-total">
@@ -1191,6 +1189,7 @@ html, body {
       <div class="plan-grid plan-grid-head"><span>Mois</span><span>Revenus</span><span>Mis de côté</span><span>Objectif</span></div>
       <div id="planRows"></div>
       <div class="plan-note">Touche un objectif pour le modifier. Touche un mois pour l'ouvrir.</div>
+      </div></div>
     </div>
 
     <div class="preview-card">
@@ -1251,8 +1250,6 @@ html, body {
     { category: 'Déplacement', slug: 'deplacement', dataKey: 'deplacementDetails', icon: CAT_ICON['Déplacement'], fill: CAT_COLOR['Déplacement'], title: 'Enveloppe déplacement', placeholder: 'Ex: essence, métro, péage...', subs: [] },
     { category: 'Plaisir', slug: 'plaisir', dataKey: 'plaisirDetails', icon: CAT_ICON['Plaisir'], fill: CAT_COLOR['Plaisir'], title: 'Enveloppe plaisir', placeholder: 'Ex: resto, ciné...',
       subs: ['Restaurants', 'Bars', 'Fast-food', 'Sport', 'Achats plaisir', 'Cadeaux'] },
-    { category: 'Imprévus', slug: 'imprevus', dataKey: 'imprevusDetails', icon: CAT_ICON['Imprévus'], fill: CAT_COLOR['Imprévus'], title: 'Enveloppe imprévus', placeholder: 'Ex: pharmacie, réparation...',
-      subs: ['Santé', 'Transport et véhicule', 'Matériel', 'Administratif et frais divers'] },
   ];
   const OTHER_SUB = 'Autre';
   function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
@@ -2011,6 +2008,7 @@ html, body {
 
   populateCategorySelect();
   buildDetailPanels();
+  $('#planHeader').onclick = () => { $('#planPanel').classList.toggle('open'); };
 
   // Best-effort favicon injection using the same logo shown in the header
   try {
