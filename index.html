@@ -1320,6 +1320,26 @@ body.sheet-open .budget-root .fab { opacity: 0; pointer-events: none; }
 </div>
 
 <script>
+// Mise à jour automatique : l'iPhone garde la page en cache. À chaque ouverture (et
+// retour sur l'app), on relit la page sur le serveur sans cache ; si sa version est
+// différente, on recharge une fois. Incrémenter APP_VERSION à chaque mise en ligne.
+(function() {
+  const APP_VERSION = '2026-10-06.1';
+  async function checkForUpdate() {
+    try {
+      const res = await fetch(location.pathname + '?check=' + Date.now(), { cache: 'no-store' });
+      const html = await res.text();
+      const m = html.match(/APP_VERSION = '([^']+)'/);
+      if (!m || m[1] === APP_VERSION) return;
+      if (sessionStorage.getItem('reloadedFor') === m[1]) return;
+      sessionStorage.setItem('reloadedFor', m[1]);
+      location.replace(location.pathname + '?v=' + encodeURIComponent(m[1]));
+    } catch (e) { /* hors ligne : on garde la version en cache */ }
+  }
+  checkForUpdate();
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkForUpdate(); });
+})();
+
 (function() {
   // Les 4 enveloppes du budget, plus l'investissement suivi à part (jamais compté comme épargne).
   const CATEGORIES = ['Logement','Abonnement','Charges fixes','Alimentation','Déplacement','Épargne','Plaisir','Imprévus','Investissement'];
