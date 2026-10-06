@@ -54,7 +54,9 @@ html, body {
   --glass: rgba(255,255,255,0.08);
   --glass-line: rgba(255,255,255,0.14);
 
-  --c-fixes: #14286B;
+  --c-logement: #14286B;
+  --c-abo: #7B96E8;
+  --c-fixes: #44526E;
   --c-alim: #5C6680;
   --c-deplac: #6E95FF;
   --c-epargne: #2456F0;
@@ -1315,8 +1317,10 @@ body.sheet-open .budget-root .fab { opacity: 0; pointer-events: none; }
 <script>
 (function() {
   // Les 4 enveloppes du budget, plus l'investissement suivi à part (jamais compté comme épargne).
-  const CATEGORIES = ['Charges fixes','Alimentation','Déplacement','Épargne','Plaisir','Imprévus','Investissement'];
+  const CATEGORIES = ['Logement','Abonnement','Charges fixes','Alimentation','Déplacement','Épargne','Plaisir','Imprévus','Investissement'];
   const CAT_COLOR = {
+    'Logement': 'var(--c-logement)',
+    'Abonnement': 'var(--c-abo)',
     'Charges fixes': 'var(--c-fixes)',
     'Alimentation': 'var(--c-alim)',
     'Déplacement': 'var(--c-deplac)',
@@ -1328,7 +1332,9 @@ body.sheet-open .budget-root .fab { opacity: 0; pointer-events: none; }
   // Silver shades are too light for white text on the category tag.
   const LIGHT_CATS = ['Imprévus', 'Investissement'];
   const CAT_ICON = {
-    'Charges fixes': '🏠',
+    'Logement': '🏠',
+    'Abonnement': '🔁',
+    'Charges fixes': '📌',
     'Alimentation': '🛒',
     'Déplacement': '🚌',
     'Épargne': '💰',
@@ -1338,9 +1344,11 @@ body.sheet-open .budget-root .fab { opacity: 0; pointer-events: none; }
   };
   // Anciennes catégories -> nouvelles enveloppes.
   const OLD_CAT_MAP = {
-    'Appartement': 'Charges fixes', 'Abonnement': 'Charges fixes',
+    'Appartement': 'Logement',
     'Sport': 'Plaisir'
   };
+  const LOGEMENT_RE = /loyer|assurance hab|électricit|electricit|\beau\b|edf|engie|charges loc|internet|box/i;
+  const ABO_RE = /abonnement|spotify|netflix|deezer|disney|prime|apple|icloud|claude|chatgpt|sfr|red by|free|bouygues|orange|sosh|\bcic\b|banque|youtube|canal/i;
   const MONTH_NAMES = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
 
   const DETAIL_CONFIG = [
@@ -1568,8 +1576,15 @@ body.sheet-open .budget-root .fab { opacity: 0; pointer-events: none; }
     DETAIL_CONFIG.forEach((cfg) => { if (!d.subBudgets[cfg.category]) d.subBudgets[cfg.category] = {}; });
     (d.expenses || []).forEach((i) => {
       if (OLD_CAT_MAP[i.category]) i.category = OLD_CAT_MAP[i.category];
+      // Une seule fois : les lignes passées en « Charges fixes » avant l'arrivée
+      // de Logement et Abonnement sont reclassées d'après leur libellé.
+      if (!d.catsV2 && i.category === 'Charges fixes') {
+        if (LOGEMENT_RE.test(i.label)) i.category = 'Logement';
+        else if (ABO_RE.test(i.label)) i.category = 'Abonnement';
+      }
       if (!CATEGORIES.includes(i.category)) i.category = 'Charges fixes';
     });
+    d.catsV2 = true;
     return d;
   }
 
