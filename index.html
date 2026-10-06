@@ -557,21 +557,13 @@ body.sheet-open .budget-root .fab { opacity: 0; pointer-events: none; }
 }
 
 /* ---------- sub-categories inside an envelope ---------- */
-.budget-root .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; margin-bottom: 14px; }
+.budget-root .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; margin: 14px 0; }
 .budget-root .sub-row { min-width: 0; }
 .budget-root .sub-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 5px; }
 .budget-root .sub-name { font-size: 12.5px; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .budget-root .sub-amt { display: inline-flex; align-items: center; gap: 2px; font-size: 11.5px; color: var(--ink-soft); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.budget-root .sub-amt.over { color: var(--red); }
-.budget-root .sub-cap {
-  width: 64px; border: none; background: var(--cream); border-radius: 6px;
-  padding: 3px 5px; font: inherit; font-size: 11.5px; text-align: right; color: var(--ink);
-}
-.budget-root .sub-cap:focus-visible { outline: none; box-shadow: 0 0 0 2px #2456F0; }
-.budget-root .sub-cap::placeholder { color: var(--ink-faint); }
 .budget-root .sub-track { height: 5px; border-radius: 3px; background: #ECEEF4; overflow: hidden; }
 .budget-root .sub-fill { height: 100%; border-radius: 3px; transition: width .25s ease; }
-.budget-root .sub-fill.over { background: var(--red) !important; }
 .budget-root .detail-item .di-sub {
   flex-shrink: 0; max-width: 104px; border: none; border-radius: 20px;
   background: var(--cream); color: var(--ink-soft); font: inherit; font-size: 10.5px; font-weight: 600;
@@ -1572,8 +1564,6 @@ body.sheet-open .budget-root .fab { opacity: 0; pointer-events: none; }
 
   function ensureDetailKeys(d) {
     DETAIL_CONFIG.forEach((cfg) => { if (!d[cfg.dataKey]) d[cfg.dataKey] = []; });
-    if (!d.subBudgets) d.subBudgets = {};
-    DETAIL_CONFIG.forEach((cfg) => { if (!d.subBudgets[cfg.category]) d.subBudgets[cfg.category] = {}; });
     (d.expenses || []).forEach((i) => {
       if (OLD_CAT_MAP[i.category]) i.category = OLD_CAT_MAP[i.category];
       // Une seule fois : les lignes passées en « Charges fixes » avant l'arrivée
@@ -1869,9 +1859,10 @@ body.sheet-open .budget-root .fab { opacity: 0; pointer-events: none; }
     return inMonth - new Date().getDate() + 1;
   }
 
+  // Dépensé par sous-catégorie, sans plafond : la barre montre la part de l'enveloppe globale.
   function renderSubGrid(cfg, details) {
     if (!cfg.subs.length) return;
-    const plafonds = data.subBudgets[cfg.category];
+    const budget = data.expenses.filter(i => i.category === cfg.category).reduce((s, i) => s + i.amount, 0);
     const bySub = {};
     details.forEach((i) => { const k = cfg.subs.includes(i.sub) ? i.sub : OTHER_SUB; bySub[k] = (bySub[k] || 0) + i.amount; });
     const subs = bySub[OTHER_SUB] ? cfg.subs.concat([OTHER_SUB]) : cfg.subs;
@@ -1879,26 +1870,14 @@ body.sheet-open .budget-root .fab { opacity: 0; pointer-events: none; }
     grid.innerHTML = '';
     subs.forEach((sub) => {
       const spent = bySub[sub] || 0;
-      const plafond = plafonds[sub] || 0;
-      const over = plafond > 0 && spent > plafond;
       const row = document.createElement('div');
       row.className = 'sub-row';
       row.innerHTML =
         '<div class="sub-top">' +
           '<span class="sub-name">' + sub + '</span>' +
-          '<span class="sub-amt' + (over ? ' over' : '') + '">' + fmt(spent) + (sub === OTHER_SUB ? '' : ' / ') + '</span>' +
+          '<span class="sub-amt">' + fmt(spent) + '</span>' +
         '</div>' +
-        '<div class="sub-track"><div class="sub-fill' + (over ? ' over' : '') + '" style="background:' + cfg.fill + '; width:' + (plafond > 0 ? Math.min(100, spent / plafond * 100) : 0) + '%"></div></div>';
-      if (sub !== OTHER_SUB) {
-        const input = document.createElement('input');
-        input.type = 'number';
-        input.inputMode = 'decimal';
-        input.className = 'sub-cap';
-        input.placeholder = 'plafond';
-        input.value = plafond || '';
-        input.onchange = async () => { plafonds[sub] = parseFloat(input.value) || 0; render(); await save(); };
-        row.querySelector('.sub-amt').appendChild(input);
-      }
+        '<div class="sub-track"><div class="sub-fill" style="background:' + cfg.fill + '; width:' + (budget > 0 ? Math.min(100, spent / budget * 100) : 0) + '%"></div></div>';
       grid.appendChild(row);
     });
   }
@@ -2064,7 +2043,6 @@ body.sheet-open .budget-root .fab { opacity: 0; pointer-events: none; }
     const carried = ensureDetailKeys({
       income: data.income.filter(i => i.recurring).map(i => ({ ...i, id: newId() })),
       expenses: data.expenses.filter(i => i.recurring).map(i => ({ ...i, id: newId() })),
-      subBudgets: JSON.parse(JSON.stringify(data.subBudgets || {})),
     });
     currentKey = nextKey;
     data = carried;
