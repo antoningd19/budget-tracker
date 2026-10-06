@@ -556,6 +556,19 @@ body.sheet-open .budget-root .fab { opacity: 0; pointer-events: none; }
   box-shadow: 0 6px 18px rgba(0,0,0,0.25);
 }
 
+.budget-root .env-budget {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  margin-top: 14px; padding: 10px 12px;
+  background: var(--cream); border-radius: 12px;
+  font-size: 13px; font-weight: 600; color: var(--ink);
+}
+.budget-root .env-budget-field { display: inline-flex; align-items: center; gap: 4px; color: var(--ink-soft); font-weight: 500; }
+.budget-root .env-budget input {
+  width: 90px; border: 1px solid var(--cream-line); background: var(--white); border-radius: 8px;
+  padding: 6px 8px; font: inherit; font-size: 16px; font-weight: 600; text-align: right; color: var(--ink);
+}
+.budget-root .env-budget input:focus-visible { outline: none; border-color: #2456F0; box-shadow: 0 0 0 3px rgba(36,86,240,0.15); }
+
 /* ---------- sub-categories inside an envelope ---------- */
 .budget-root .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; margin: 14px 0; }
 .budget-root .sub-row { min-width: 0; }
@@ -1642,6 +1655,10 @@ body.sheet-open .budget-root .fab { opacity: 0; pointer-events: none; }
         '</div>' +
         '<div class="detail-body">' +
           '<div class="detail-body-inner">' +
+            '<label class="env-budget">' +
+              '<span>Budget du mois</span>' +
+              '<span class="env-budget-field"><input type="number" inputmode="decimal" id="' + cfg.slug + 'BudgetInput" placeholder="0"> €</span>' +
+            '</label>' +
             '<div class="sub-grid" id="' + cfg.slug + 'Subs"></div>' +
             '<div class="detail-list" id="' + cfg.slug + 'List"></div>' +
             '<div class="add-row">' +
@@ -1661,6 +1678,10 @@ body.sheet-open .budget-root .fab { opacity: 0; pointer-events: none; }
     $('#detailPanels').innerHTML = DETAIL_CONFIG.map(buildDetailPanelHTML).join('');
     DETAIL_CONFIG.forEach((cfg) => {
       $('#' + cfg.slug + 'Header').onclick = () => { $('#' + cfg.slug + 'Panel').classList.toggle('open'); };
+      $('#' + cfg.slug + 'BudgetInput').onchange = async (e) => {
+        setEnvelopeBudget(cfg, Math.max(0, parseFloat(e.target.value) || 0));
+        render(); await save();
+      };
       $('#add' + cap(cfg.slug) + 'Btn').onclick = async () => {
         const label = $('#' + cfg.slug + 'Label').value.trim();
         const amount = parseFloat($('#' + cfg.slug + 'Amount').value);
@@ -1678,6 +1699,19 @@ body.sheet-open .budget-root .fab { opacity: 0; pointer-events: none; }
         render(); await save();
       };
     });
+  }
+
+  // Le budget d'une enveloppe est la somme de ses lignes de dépenses : le modifier ici
+  // ajuste la ligne existante (ou en crée une, récurrente), pour que la carte, la
+  // répartition et « Créer le mois suivant » restent cohérents.
+  function setEnvelopeBudget(cfg, amount) {
+    const lines = data.expenses.filter((i) => i.category === cfg.category);
+    if (lines.length === 0) {
+      if (amount > 0) data.expenses.push({ id: newId(), label: 'Budget ' + cfg.category.toLowerCase(), amount, category: cfg.category, recurring: true });
+      return;
+    }
+    const others = lines.slice(1).reduce((s, i) => s + i.amount, 0);
+    lines[0].amount = Math.max(0, Math.round((amount - others) * 100) / 100);
   }
 
   function renderRow(item, type) {
@@ -1893,9 +1927,14 @@ body.sheet-open .budget-root .fab { opacity: 0; pointer-events: none; }
     $('#' + cfg.slug + 'SpentLabel').textContent = fmt(spent) + ' dépensés';
     renderSubGrid(cfg, details);
     $('#' + cfg.slug + 'BudgetLabel').textContent = (remaining >= 0 ? 'reste ' + fmt(remaining) : 'dépassement de ' + fmt(Math.abs(remaining))) + ' (enveloppe ' + fmt(budget) + ')';
+    const budgetInput = $('#' + cfg.slug + 'BudgetInput');
+    if (document.activeElement !== budgetInput) budgetInput.value = budget || '';
     const days = daysLeft(currentKey);
     const perDay = $('#' + cfg.slug + 'PerDay');
-    if (budget <= 0 || days === 0) {
+    if (budget <= 0) {
+      perDay.textContent = 'Aucun budget : ouvre l’enveloppe pour le définir';
+      perDay.className = 'detail-perday';
+    } else if (days === 0) {
       perDay.textContent = '';
     } else if (remaining <= 0) {
       perDay.textContent = remaining < 0 ? 'Enveloppe dépassée : chaque dépense réduit ton épargne' : 'Enveloppe vide pour ce mois';
