@@ -8,7 +8,7 @@ PWA de suivi de budget mensuel personnel, pensée pour voir chaque jour ce que j
 
 - **Mis de côté ce mois** : la carte principale affiche l'épargne du mois (lignes Épargne + reste positif en fin de mois) et le taux d'épargne, avec revenus, dépenses et investissement (suivi à part, jamais compté comme épargne)
 - **Catégories** : Logement, Abonnement, Charges fixes, Alimentation, Déplacement, Épargne, Plaisir, Imprévus, Investissement
-- **Enveloppes** Alimentation, Déplacement et Plaisir : dépensé / reste, barre de progression et reste par jour jusqu'à la fin du mois, visibles même enveloppe fermée ; un dépassement réduit l'épargne du mois
+- **Enveloppes** Alimentation, Déplacement et Plaisir : budget du mois modifiable directement dans l'enveloppe, dépensé / reste, barre de progression et reste par jour jusqu'à la fin du mois, visibles même enveloppe fermée ; un dépassement réduit l'épargne du mois
 - **Sous-catégories Plaisir** (restaurants, bars, fast-food, sport, achats plaisir, cadeaux) avec le dépensé de chacune ; seul le budget global de l'enveloppe est fixé
 - **Ajout rapide** : bouton « + » pour saisir une dépense d'enveloppe en deux gestes, avec annulation
 - **Plan épargne octobre → avril** : total mis de côté, objectif global et détail par mois, objectifs modifiables dans l'app (octobre et novembre en bonus)
